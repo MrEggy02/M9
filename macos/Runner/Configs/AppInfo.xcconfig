@@ -8,7 +8,7 @@
 PRODUCT_NAME = m9
 
 // The application's bundle identifier
-PRODUCT_BUNDLE_IDENTIFIER = com.example.m9
+PRODUCT_BUNDLE_IDENTIFIER = com.m9driver.app
 
 // The copyright displayed in application information
 PRODUCT_COPYRIGHT = Copyright © 2025 com.example. All rights reserved.

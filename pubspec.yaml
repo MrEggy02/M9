@@ -10,7 +10,6 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-
   cupertino_icons: ^1.0.8
   permission_handler: ^12.0.0+1
   geolocator: ^14.0.0
@@ -29,6 +28,10 @@ dependencies:
   dartz: ^0.10.1
   equatable: ^2.0.7
   dio: ^5.8.0+1
+  mapbox_maps_flutter: ^2.8.0
+  location: ^8.0.0
+  flutter_dotenv: ^5.2.1
+  map_location_picker: ^0.0.1
 
 dev_dependencies:
   flutter_test:
@@ -41,7 +44,13 @@ flutter:
 
   assets:
     - assets/images/splash_images/
-    - assets/images/home_images/
+    - assets/images/drivermode/
+    - assets/images/usermode/
     - assets/icons/
     - assets/fonts/
+    - assets/.env
 
+  fonts:
+      - family: NotoSansLao
+        fonts:
+          - asset: assets/fonts/NotoSansLao.ttf

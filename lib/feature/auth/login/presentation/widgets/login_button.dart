@@ -3,6 +3,7 @@
 // ຄອມໂພເນັນສຳລັບປຸ່ມເຂົ້າສູ່ລະບົບ
 
 import 'package:flutter/material.dart';
+import 'package:m9/core/routes/app_routes.dart';
 
 class LoginButton extends StatelessWidget {
   const LoginButton({super.key});
@@ -13,7 +14,9 @@ class LoginButton extends StatelessWidget {
       width: double.infinity,
       height: 56,
       child: ElevatedButton(
-        onPressed: () {},
+        onPressed: () {
+          Navigator.pushReplacementNamed(context, AppRoutes.homepage);
+        },
         style: ElevatedButton.styleFrom(
           backgroundColor: Colors.amber,
           foregroundColor: Colors.black,

@@ -1,7 +1,8 @@
-import 'package:m9/feature/presentation/pages/home/bloc/home_bloc.dart';
-import 'package:m9/feature/presentation/pages/home/data/repositories/banner_repository.dart';
-import 'package:m9/feature/presentation/pages/home/data/repositories/service_repository.dart';
-import 'package:m9/feature/presentation/pages/home/data/repositories/user_repository.dart';
+
+import 'package:m9/feature/usermode/presentation/home/bloc/home_bloc.dart';
+import 'package:m9/feature/usermode/presentation/home/data/repositories/banner_repository.dart';
+import 'package:m9/feature/usermode/presentation/home/data/repositories/service_repository.dart';
+import 'package:m9/feature/usermode/presentation/home/data/repositories/user_repository.dart';
 import 'package:provider/provider.dart';
 import 'package:provider/single_child_widget.dart';
 

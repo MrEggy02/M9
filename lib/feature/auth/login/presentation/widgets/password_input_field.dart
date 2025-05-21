@@ -38,7 +38,7 @@ class _PasswordInputFieldState extends State<PasswordInputField> {
               decoration: InputDecoration(
                 hintText: 'ປ້ອນລະຫັດຜ່ານ...',
                 border: InputBorder.none,
-                contentPadding: EdgeInsets.symmetric(horizontal: 20),
+                contentPadding: EdgeInsets.symmetric(horizontal: 20,vertical: 10),
                 suffixIcon: IconButton(
                   icon: Icon(
                     _obscureText ? Icons.visibility_off : Icons.visibility,

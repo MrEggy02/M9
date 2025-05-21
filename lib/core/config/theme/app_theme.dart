@@ -7,6 +7,7 @@ class AppTheme {
   static final ThemeData lightTheme = ThemeData(
     primaryColor: AppColors.primaryColor,
     scaffoldBackgroundColor: AppColors.backgroundColor,
+    fontFamily: "NotoSansLao",
     appBarTheme: const AppBarTheme(
       color: AppColors.backgroundColor,
       elevation: 0,

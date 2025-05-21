@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "587488109812",
+    "project_id": "m9-driver-lao",
+    "storage_bucket": "m9-driver-lao.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:587488109812:android:59badd506897a5a5f96aa1",
+        "android_client_info": {
+          "package_name": "com.m9driver.ap"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAOPF1k85xPLBR5roglJOelvo8zIRfDOgQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

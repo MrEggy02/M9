@@ -2,6 +2,8 @@
 // ໄຟລ໌ສຳລັບໜ້າຈໍເຂົ້າສູ່ລະບົບ
 
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
+import 'package:m9/core/config/theme/app_color.dart';
 import 'package:m9/core/routes/app_routes.dart';
 import '../../../signup/register/page/resister_screen.dart';
 import '../widgets/phone_input_field.dart';
@@ -13,13 +15,16 @@ class LoginPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var size = MediaQuery.of(context).size;
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.white,
         elevation: 0,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back, color: Colors.black),
-          onPressed: () {},
+          onPressed: () {
+            Navigator.pop(context);
+          },
         ),
         title: const Text('ກັບຄືນ', style: TextStyle(color: Colors.black)),
       ),
@@ -34,10 +39,7 @@ class LoginPage extends StatelessWidget {
               const Center(
                 child: Text(
                   'ເຂົ້າສູ່ລະບົບ',
-                  style: TextStyle(
-                    fontSize: 28,
-                    fontWeight: FontWeight.bold,
-                  ),
+                  style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
                 ),
               ),
               const SizedBox(height: 30),
@@ -45,10 +47,7 @@ class LoginPage extends StatelessWidget {
               const Text(
                 'ປ້ອນໝາຍເລກໂທລະສັບຂອງທ່ານ ແລະ\nລະຫັດຜ່ານເພື່ອດຳເນີນການເຂົ້າສູ່ລະບົບ',
                 textAlign: TextAlign.center,
-                style: TextStyle(
-                  color: Colors.grey,
-                  fontSize: 16,
-                ),
+                style: TextStyle(color: Colors.grey, fontSize: 16),
               ),
               const SizedBox(height: 40),
               // ຊ່ອງປ້ອນເບີໂທລະສັບ
@@ -78,10 +77,46 @@ class LoginPage extends StatelessWidget {
                   ),
                 ],
               ),
-              const SizedBox(height: 30),
+              const SizedBox(height: 20),
               // ປຸ່ມເຂົ້າສູ່ລະບົບ
               const LoginButton(),
-              const SizedBox(height: 60),
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 20,horizontal: 20),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Container(height: 1, width: 80, color: Colors.grey),
+                    Text(
+                      "ຫຼືເຂົ້າສູ່ລະບົບຜ່ານ",
+                      style: TextStyle(fontSize: 12, color: Colors.grey),
+                    ),
+                     Container(height: 1, width: 80, color: Colors.grey),
+                  ],
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 10),
+                child: Container(
+                  height: size.height/16,
+                  width: size.width/1.1,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10),
+                    color: Colors.white,
+                    border: Border.all(color: Colors.grey)
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 10),
+                      child: SvgPicture.asset('assets/icons/google_ic.svg',fit: BoxFit.cover,),
+                    ),
+                    Text("ເຂົ້າສູ່ລະບົບດ້ວຍ",style: TextStyle(fontWeight: FontWeight.bold),)
+                  ],)
+                ),
+                
+              ),
+              
               // ຂໍ້ຄວາມສຳລັບລົງທະບຽນຜູ້ໃຊ້ໃໝ່
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -89,7 +124,7 @@ class LoginPage extends StatelessWidget {
                   const Text('ທ່ານຍັງບໍ່ມີບັນຊີ ?'),
                   TextButton(
                     onPressed: () {
-          Navigator.pushReplacementNamed(context, AppRoutes.Registerscreen);
+                      Navigator.pushNamed(context, AppRoutes.Registerscreen);
                     },
                     child: const Text(
                       'ລົງທະບຽນຜູ້ໃຊ້ໃໝ່',
