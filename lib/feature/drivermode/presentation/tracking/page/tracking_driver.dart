@@ -64,13 +64,13 @@ class _TrackingDriverState extends State<TrackingDriver> {
               
               child: Column(
                 children: [
-                  // Container(
-                  //   height: 50,
-                  //   decoration: BoxDecoration(color: Color(0xFFF7DCB2),borderRadius:BorderRadius.circular(20) ),
-                  // child: Column(children: [
-                  //   Text("ຖະໜົນ",style: TextStyle(),)
-                  // ],),
-                  // ),
+                  Container(
+                    height: 50,
+                    decoration: BoxDecoration(color: Color(0xFFF7DCB2),borderRadius:BorderRadius.circular(20) ),
+                  child: Column(children: [
+                    Text("ຖະໜົນ",style: TextStyle(),)
+                  ],),
+                  ),
                   Image.asset('assets/icons/pin.png',fit: BoxFit.cover,),
                 ],
               )),

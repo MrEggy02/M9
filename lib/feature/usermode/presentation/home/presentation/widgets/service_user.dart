@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:m9/core/routes/app_routes.dart';
 import 'package:m9/feature/drivermode/presentation/tracking/page/tracking_driver.dart';
+import 'package:nav_service/nav_service.dart';
 
 class ServiceUser extends StatefulWidget {
   const ServiceUser({super.key});
@@ -11,7 +13,7 @@ class ServiceUser extends StatefulWidget {
 
 class _ServiceUserState extends State<ServiceUser> {
   List<dynamic> serviceData = [
-    {"icon": "assets/images/drivermode/car.png", "title": "ເອີ້ນລົດ"},
+    {"icon": "assets/images/drivermode/car.png", "title": "ເອີ້ນລົດ","ontap": (){}},
     {"icon": "assets/images/usermode/rental.png", "title": "ລົດເຊົ່າ-ເໝົາລົດ"},
     {"icon": "assets/images/drivermode/delivery.png", "title": "ຈັດສົ່ງສິນຄ້າ"},
   ];
@@ -31,10 +33,7 @@ class _ServiceUserState extends State<ServiceUser> {
       itemBuilder: (context, index) {
         return GestureDetector(
           onTap: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => TrackingDriver()),
-            );
+          NavService.pushReplacementNamed(AppRoutes.find_driver);
            
           },
           child: Card(

@@ -7,6 +7,7 @@ import 'package:m9/feature/drivermode/presentation/home/widget/service_driver.da
 import 'package:m9/feature/usermode/presentation/home/presentation/widgets/drawer_user.dart';
 import 'package:m9/feature/usermode/presentation/home/presentation/widgets/header_user.dart';
 import 'package:m9/feature/usermode/presentation/home/presentation/widgets/service_user.dart';
+import 'package:map_location_picker/map_location_picker.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -17,9 +18,47 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
+  Future<Position?> getPermission() async {
+    bool serviceEnabled;
+    LocationPermission permission;
+    serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    if (!serviceEnabled) {
+      return null;
+    }
+
+    permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      await Geolocator.requestPermission();
+
+      if (permission == LocationPermission.denied) {
+        return null;
+      }
+    }
+
+    if (permission == LocationPermission.deniedForever) {
+      return null;
+    }
+    Position? position = await Geolocator.getLastKnownPosition();
+    {
+      if (position != null) {
+        return position;
+      } else {
+        return await Geolocator.getCurrentPosition(
+          // ignore: deprecated_member_use
+          desiredAccuracy: LocationAccuracy.high,
+        );
+      }
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    getPermission();
+  }
+
   @override
   Widget build(BuildContext context) {
-  
     return Scaffold(
       backgroundColor: Colors.grey.shade50,
       key: scaffoldKey,

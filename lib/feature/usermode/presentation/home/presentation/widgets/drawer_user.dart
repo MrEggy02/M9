@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:m9/core/config/theme/app_color.dart' show AppColors;
+import 'package:m9/core/routes/app_routes.dart';
 
 class DrawerUser extends StatefulWidget {
   const DrawerUser({super.key});
@@ -74,7 +75,7 @@ class _DrawerUserState extends State<DrawerUser> {
                   leading: Icon(Icons.local_taxi_outlined),
                   title: const Text('ເອີ້ນລົດ'),
                   onTap: () {
-                    Navigator.pop(context);
+                     Navigator.pushReplacementNamed(context, AppRoutes.find_driver);
                   },
                 ),
                  ListTile(
@@ -125,26 +126,31 @@ class _DrawerUserState extends State<DrawerUser> {
           // Bottom container - will always stay at the bottom
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 30, horizontal: 10),
-            child: Container(
-              height: 50,
-              width: double.infinity,
-              decoration: BoxDecoration(
-                color: AppColors.primaryColor,
-                borderRadius: BorderRadius.circular(10),
-              ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(Icons.mobile_friendly),
-
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 10),
-                    child: Text(
-                      "ໂໝດຜູ້ຂັບ",
-                      style: TextStyle(fontWeight: FontWeight.bold),
+            child: GestureDetector(
+              onTap: (){
+                Navigator.pushReplacementNamed(context, AppRoutes.register_online);
+              },
+              child: Container(
+                height: 50,
+                width: double.infinity,
+                decoration: BoxDecoration(
+                  color: AppColors.primaryColor,
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(Icons.mobile_friendly),
+              
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 10),
+                      child: Text(
+                        "ໂໝດຜູ້ຂັບ",
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
           ),

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:m9/core/config/theme/app_color.dart' show AppColors;
+import 'package:m9/core/routes/app_routes.dart';
 
 class DrawerDriver extends StatefulWidget {
   const DrawerDriver({super.key});
@@ -110,26 +111,31 @@ class _DrawerDriverState extends State<DrawerDriver> {
           // Bottom container - will always stay at the bottom
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 30, horizontal: 10),
-            child: Container(
-              height: 50,
-              width: double.infinity,
-              decoration: BoxDecoration(
-                color: AppColors.primaryColor,
-                borderRadius: BorderRadius.circular(10),
-              ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(Icons.mobile_friendly),
-
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 10),
-                    child: Text(
-                      "ໂໝດຜູ້ໂດຍສານ",
-                      style: TextStyle(fontWeight: FontWeight.bold),
+            child: GestureDetector(
+              onTap: (){
+               Navigator.pushReplacementNamed(context, AppRoutes.homepage);
+              },
+              child: Container(
+                height: 50,
+                width: double.infinity,
+                decoration: BoxDecoration(
+                  color: AppColors.primaryColor,
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(Icons.mobile_friendly),
+              
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 10),
+                      child: Text(
+                        "ໂໝດຜູ້ໂດຍສານ",
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
           ),

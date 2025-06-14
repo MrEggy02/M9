@@ -18,7 +18,7 @@ class RegisterScreen extends StatelessWidget {
         leading: IconButton(
           icon: const Icon(Icons.arrow_back, color: Colors.black),
           onPressed: () {
-          Navigator.pushReplacementNamed(context, AppRoutes.login);
+            Navigator.pop(context);
           },
         ),
         title: const Text('ກັບຄືນ', style: TextStyle(color: Colors.black)),
@@ -34,10 +34,7 @@ class RegisterScreen extends StatelessWidget {
               const Center(
                 child: Text(
                   'ລົງທະບຽນຜູ້ໃຊ້ໃໝ່',
-                  style: TextStyle(
-                    fontSize: 28,
-                    fontWeight: FontWeight.bold,
-                  ),
+                  style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
                 ),
               ),
               const SizedBox(height: 30),
@@ -45,10 +42,7 @@ class RegisterScreen extends StatelessWidget {
               const Text(
                 'ປ້ອນໝາຍເລກໂທລະສັບຂອງທ່ານ ເພື່ອລົງທະບຽນຜູ້ໃຊ້ໃໝ່',
                 textAlign: TextAlign.center,
-                style: TextStyle(
-                  color: Colors.grey,
-                  fontSize: 16,
-                ),
+                style: TextStyle(color: Colors.grey, fontSize: 16),
               ),
               const SizedBox(height: 40),
               // ຊ່ອງປ້ອນເບີໂທລະສັບ
@@ -67,7 +61,7 @@ class RegisterScreen extends StatelessWidget {
                   const Text('ມີບັນຊີແລ້ວ ?'),
                   TextButton(
                     onPressed: () {
-          Navigator.pushReplacementNamed(context, AppRoutes.login);
+                      Navigator.pushReplacementNamed(context, AppRoutes.login);
                     },
                     child: const Text(
                       'ເຂົ້າສູ່ລະບົບ',
@@ -111,9 +105,7 @@ class RegisterScreen extends StatelessWidget {
         const Expanded(
           child: Text(
             'ຂ້ອຍຍອມຮັບຂໍ້ກຳນົດແລະ ນະໂຍບາຍ',
-            style: TextStyle(
-              fontSize: 16,
-            ),
+            style: TextStyle(fontSize: 16),
           ),
         ),
       ],

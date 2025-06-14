@@ -1,11 +1,14 @@
 // core/routes/app_routes.dart
 import 'package:flutter/material.dart';
-import 'package:m9/feature/auth/login/presentation/pages/login_page.dart';
+import 'package:m9/feature/auth/login/pages/login_page.dart';
 import 'package:m9/feature/auth/signup/otp/presentation/pages/otp_verification_page.dart';
 import 'package:m9/feature/auth/signup/register/page/resister_screen.dart';
 import 'package:m9/feature/drivermode/presentation/home/page/home_driver.dart';
+import 'package:m9/feature/drivermode/presentation/registerOnline/register_online.dart';
+import 'package:m9/feature/usermode/presentation/finderdriver/page/finder_driver.dart';
+import 'package:m9/feature/usermode/presentation/finderdriver/page/polyline/polyline_finder_driver.dart';
+import 'package:m9/feature/usermode/presentation/finderdriver/page/selectmap/select_map.dart';
 import 'package:m9/feature/usermode/presentation/history/presentation/pages/history_page.dart';
-import 'package:m9/feature/usermode/presentation/home/presentation/pages/home_screen.dart';
 import 'package:m9/feature/usermode/presentation/home/presentation/pages/home_page.dart';
 import 'package:m9/feature/usermode/presentation/report/presentation/pages/report_page.dart';
 import 'package:m9/feature/usermode/presentation/setting/setting_page.dart';
@@ -24,7 +27,11 @@ class AppRoutes {
   static const String Registerscreen = '/Registerscreen';
   static const String Otp = '/Otp';
   static const String user = '/user';
-
+  static const String home_driver = '/home_driver';
+  static const String register_online = '/register_online';
+  static const String find_driver = "/find_driver";
+  static const String selectmap = "/selectmap";
+   static const String polylinefinderdriver = "/polylinefinderdriver";
 
   // ການກຳນົດເສັ້ນທາງ
   static Map<String, Widget Function(BuildContext)> get routes => {
@@ -37,7 +44,10 @@ class AppRoutes {
     homepage: (context) => const HomePage(),
     Registerscreen: (context) => const RegisterScreen(),
     Otp: (context) => const OtpVerificationPage(),
-    
-    // user: (context) => const CreateUserPage(),
+    home_driver: (context) => const HomeDriver(),
+    find_driver: (context)=> const FinderDrivder(),
+    selectmap: (context) => const SelectMap(),
+    polylinefinderdriver: (context) => const PolylineFinderDriver(),
+    register_online: (context)=> const RegisterOnline(),
   };
 }
