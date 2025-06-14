@@ -56,16 +56,13 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MultiProvider(
-      providers: AppDependencies.providers,
-      child: MaterialApp(
-        debugShowCheckedModeBanner: false,
-        title: 'M9',
-        theme: AppTheme.lightTheme,
-        initialRoute: AppRoutes.onboarding,
-        navigatorKey: NavService.navigatorKey,
-        routes: AppRoutes.routes,
-      ),
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      title: 'M9',
+      theme: AppTheme.lightTheme,
+      initialRoute: AppRoutes.onboarding,
+      navigatorKey: NavService.navigatorKey,
+      routes: AppRoutes.routes,
     );
   }
 }
