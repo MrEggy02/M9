@@ -23,7 +23,7 @@ class NetworkCall {
     if (body != null) {
       requestBody = jsonEncode(body);
     }
-   // log.d('Request: $method => $url, headers = $headers, body = $requestBody');
+    log.d('Request: $method => $url, headers = $headers, body = $requestBody');
 
     try {
       dynamic response;

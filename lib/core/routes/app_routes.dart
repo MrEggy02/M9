@@ -1,8 +1,9 @@
 // core/routes/app_routes.dart
 import 'package:flutter/material.dart';
-import 'package:m9/feature/auth/login/pages/login_page.dart';
-import 'package:m9/feature/auth/signup/otp/presentation/pages/otp_verification_page.dart';
-import 'package:m9/feature/auth/signup/register/page/resister_screen.dart';
+import 'package:m9/feature/auth/presentation/login/pages/login_page.dart';
+import 'package:m9/feature/auth/presentation/signup/otp/page/otp_verify.dart';
+//import 'package:m9/feature/auth/presentation/signup/otp/presentation/pages/otp_verification_page.dart';
+import 'package:m9/feature/auth/presentation/signup/register/page/resister_screen.dart';
 import 'package:m9/feature/drivermode/presentation/home/page/home_driver.dart';
 import 'package:m9/feature/drivermode/presentation/registerOnline/register_online.dart';
 import 'package:m9/feature/usermode/presentation/finderdriver/page/finder_driver.dart';

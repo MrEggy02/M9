@@ -6,7 +6,8 @@ import 'package:m9/feature/usermode/presentation/finderdriver/cubit/finder_drive
 import 'package:m9/feature/usermode/presentation/finderdriver/widget/popup_select_map.dart';
 
 class BottomFinderDriver extends StatefulWidget {
-  const BottomFinderDriver({super.key});
+  final scaffoldKey;
+  const BottomFinderDriver({super.key,required this.scaffoldKey});
 
   @override
   State<BottomFinderDriver> createState() => _BottomFinderDriverState();
@@ -177,7 +178,7 @@ class _BottomFinderDriverState extends State<BottomFinderDriver> {
                           child: GestureDetector(
                             onTap: () {
                               cubit.onTapForm(1);
-                              cubit.scaffoldKey!.currentState?.showBottomSheet((
+                              widget.scaffoldKey!.currentState?.showBottomSheet((
                                 context,
                               ) {
                                 return PopUpSelectMap();
@@ -241,7 +242,7 @@ class _BottomFinderDriverState extends State<BottomFinderDriver> {
                     onTap: () {
                       cubit.onTapForm(1);
                       //cubit.scaffoldKey = null;
-                      cubit.scaffoldKey!.currentState?.showBottomSheet((
+                      widget.scaffoldKey!.currentState?.showBottomSheet((
                         context,
                       ) {
                         return PopUpSelectMap();

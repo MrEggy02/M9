@@ -16,26 +16,15 @@ class ApiPaths {
   static String changePasswordPath = '${baseURL}/user/change-password';
   static String getProfilePath = '${baseURL}/user/profile';
   static String updateProfile = '${baseURL}/user/update/';
-  static String updateAddress = '${baseURL}/user/updateAddress/';
   static String updateProfileImage = '${baseURL}/user/updateProfile/';
   static String editPassword = '${baseURL}/user/updatePassword';
-  //---------------------- address ---------------------
-  static String provincePath = '${baseURL}/provinces';
-  static String districtPath = '${baseURL}/districts?provinceId=';
-  static String villageIdPath = '${baseURL}/villages?districtId=';
-  //---------------------- PatrollingReport ---------------------
-  static String getPatrollingReport = '${baseURL}/parollingReport/getMany';
-  static String getOnePatrollingReport = '${baseURL}/parollingReport/get/';
-  static String postPatrollingReport = '${baseURL}/parollingReport/create';
-  static String putPatrollingReport = '${baseURL}/parollingReport/update/';
+  //---------------------- home ---------------------
+  static String getservicePath = '${baseURL}/service/getall';
+  static String getbannerPath = '${baseURL}/banner/getall';
+  static String getCarTypePath = '${baseURL}/car-type/getall';
+  //---------------------- order ---------------------
+  static String createOrderCustomer = '${baseURL}/user/customer/order/create';
+  static String createOrderDriver= '${baseURL}/user/driver/order/create';
   //---------------------- threatend ---------------------
 
-  static String postThreatenedSpecial = '${baseURL}/threatenedSpecies/create';
-  static String postHunting = '${baseURL}/hunting/create';
-  static String getOneThreatenedSpecial = '${baseURL}/threatenedSpecies/get/';
-  static String postOther = '${baseURL}/otherDisturbances/create';
-  //---------------------- hunting ---------------------
-  static String getOneHunting = '${baseURL}/hunting/get/';
-  //---------------------- other ---------------------
-  static String getOneotherDisturbances = '${baseURL}/otherDisturbances/get/';
 }

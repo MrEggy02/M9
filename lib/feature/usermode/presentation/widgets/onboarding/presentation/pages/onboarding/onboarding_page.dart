@@ -1,6 +1,7 @@
 // presentation/pages/onboarding/onboarding_page.dart
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
+import 'package:hive_ce/hive.dart';
 import 'package:m9/core/config/assets/app_images.dart';
 import 'package:m9/core/constants/app_constants.dart';
 import 'package:m9/core/routes/app_routes.dart';
@@ -64,6 +65,8 @@ class _OnboardingPageState extends State<Onboarding> {
   void _handleNextButton() async {
     if (_currentPage == _pages.length - 1) {
       // ຖ້າເປັນໜ້າສຸດທ້າຍ, ຂໍການອະນຸຍາດແລະໄປໜ້າ login
+      final box = Hive.box('settings');
+      await box.put('seenOnboarding', true);
       setState(() {
         Navigator.pushNamed(context, AppRoutes.login);
       });
@@ -77,7 +80,9 @@ class _OnboardingPageState extends State<Onboarding> {
   }
 
   // ການຈັດການການກົດປຸ່ມ Skip
-  void _handleSkip() {
+  void _handleSkip() async {
+    final box = Hive.box('settings');
+    await box.put('seenOnboarding', true);
     Navigator.pushNamed(context, AppRoutes.login);
   }
 

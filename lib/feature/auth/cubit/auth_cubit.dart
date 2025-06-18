@@ -1,6 +1,8 @@
 // ignore_for_file: unnecessary_null_comparison
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:hive_ce/hive.dart';
+import 'package:m9/core/data/hive/hive_database.dart';
 import 'package:m9/core/data/response/messageHelper.dart';
 import 'package:m9/core/routes/app_routes.dart';
 import 'package:m9/feature/auth/cubit/auth_state.dart';
@@ -18,36 +20,70 @@ class AuthCubit extends Cubit<AuthState> {
   int currenIndex = 0;
 
   final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
+  final formKeyLogin = GlobalKey<FormState>();
+
   TextEditingController phoneNumber = TextEditingController();
   TextEditingController password = TextEditingController();
   TextEditingController newpassword = TextEditingController();
   TextEditingController comfirmpassword = TextEditingController();
   TextEditingController username = TextEditingController();
-  TextEditingController otp = TextEditingController();
-  TextEditingController oldImage = TextEditingController();
-  TextEditingController bankName = TextEditingController();
-  TextEditingController accountName = TextEditingController();
-  TextEditingController accountNo = TextEditingController();
+  TextEditingController pinController = TextEditingController();
+  var dataRemember;
   @override
   Future<void> close() {
     mounted = false;
     return super.close();
   }
 
+  clear() {
+    phoneNumber.clear();
+    password.clear();
+    newpassword.clear();
+    comfirmpassword.clear();
+    username.clear();
+  }
+
+  Future<void> saveLoginRemember({
+    required String phoneNumber,
+    required String password,
+  }) async {
+    await HiveDatabase.saveLoginRemember(
+      phoneNumber: "20" + phoneNumber,
+      password: password,
+    );
+  }
+
+  Future<void> getProfile() async {
+    emit(state.copyWith(authStatus: AuthStatus.loading));
+    final result = await authRepositories.getProfile();
+    result.fold(
+      (error) {
+        emit(state.copyWith(authStatus: AuthStatus.failure));
+        MessageHelper.showSnackBarMessage(
+          isSuccess: false,
+          message: error.toString(),
+        );
+      },
+      (success) {
+        emit(state.copyWith(authStatus: AuthStatus.success));
+      },
+    );
+  }
+
   Future<void> Login({
-    required String username,
+    required String phoneNumber,
     required String password,
   }) async {
     try {
+      emit(state.copyWith(authStatus: AuthStatus.loading));
       var result = await authRepositories.Login(
-        username: username,
+        phoneNumber: '20' + phoneNumber,
         password: password,
       );
       result.fold(
         (f) {
-          emit(state.copyWith(
-              authStatus: AuthStatus.failure, 
-              error: f.toString()),
+          emit(
+            state.copyWith(authStatus: AuthStatus.failure, error: f.toString()),
           );
           MessageHelper.showSnackBarMessage(
             isSuccess: false,
@@ -56,6 +92,7 @@ class AuthCubit extends Cubit<AuthState> {
         },
         (success) {
           emit(state.copyWith(authStatus: AuthStatus.success));
+          clear();
           NavService.pushNamed(AppRoutes.homepage);
         },
       );

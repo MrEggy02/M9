@@ -1,28 +1,44 @@
 // ໂມເດວຂໍ້ມູນບໍລິການຕ່າງໆ
 
-class Service {
-  final String id;
-  final String name;
-  final String iconUrl;
-  final String description;
-  final bool isActive;
+// ໂມເດວຂໍ້ມູນບໍລິການຕ່າງໆ
 
-  Service({
-    required this.id,
-    required this.name,
-    required this.iconUrl,
-    required this.description,
-    this.isActive = true,
+
+
+import 'dart:convert';
+
+List<ServiceModel> serviceModelFromJson(String str) =>
+    List<ServiceModel>.from(
+      json.decode(str).map((x) => ServiceModel.fromJson(x)),
+    );
+class ServiceModel {
+  final String? id;
+  final String? name;
+  final String? icon;
+  final String? detail;
+  final bool? isActive;
+  final String? createAt;
+  final String? updatedAt;
+
+  ServiceModel({
+    this.id,
+    this.name,
+    this.icon,
+    this.detail,
+    this.isActive,
+    this.createAt,
+    this.updatedAt,
   });
 
   // ສ້າງ Service ຈາກ JSON ຂໍ້ມູນ
-  factory Service.fromJson(Map<String, dynamic> json) {
-    return Service(
+  factory ServiceModel.fromJson(Map<String, dynamic> json) {
+    return ServiceModel(
       id: json['id'],
       name: json['name'],
-      iconUrl: json['icon_url'],
-      description: json['description'],
-      isActive: json['is_active'] ?? true,
+      icon: json['icon'],
+      detail: json['detail'],
+      isActive: json['isActive'],
+      createAt: json['createdAt'],
+      updatedAt: json['updatedAt'],
     );
   }
 
@@ -31,9 +47,11 @@ class Service {
     return {
       'id': id,
       'name': name,
-      'icon_url': iconUrl,
-      'description': description,
-      'is_active': isActive,
+      'icon': icon,
+      'detail': detail,
+      'isActive': isActive,
+      'createdAt': createAt,
+      'updatedAt': updatedAt,
     };
   }
 }

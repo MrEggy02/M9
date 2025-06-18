@@ -47,11 +47,11 @@ class _FinderDrivderState extends State<FinderDrivder> {
       builder: (context, state) {
         var cubit = context.read<FinderDriverCubit>();
         return Scaffold(
-          key: cubit.scaffoldKey,
+          key: scaffoldKey,
           drawer: DrawerFinderDriver(),
           backgroundColor: Colors.grey.shade100,
           bottomNavigationBar:
-              cubit.currenIndex == 1 ? SizedBox() : BottomFinderDriver(),
+              cubit.currenIndex == 1 ? SizedBox() : BottomFinderDriver(scaffoldKey: scaffoldKey,),
           body: Stack(
             children: [
               GoogleMap(
@@ -96,7 +96,7 @@ class _FinderDrivderState extends State<FinderDrivder> {
                 left: 15,
                 child: GestureDetector(
                   onTap: () {
-                    cubit.scaffoldKey!.currentState!.openDrawer();
+                    scaffoldKey.currentState!.openDrawer();
                   },
                   child: Container(
                     height: 60,

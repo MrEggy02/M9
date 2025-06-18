@@ -4,13 +4,23 @@ import 'package:m9/feature/auth/data/service/auth_service.dart';
 
 class AuthRepositories {
   AuthService authService = AuthService();
+
+  Future<Either<Failure, dynamic>> getProfile() async {
+    try {
+      final reuslt = await authService.getProfile();
+      return right(reuslt);
+    } catch (e) {
+      return Left(Failure(e.toString()));
+    }
+  }
+
   Future<Either<Failure, bool>> Login({
-    required String username,
+    required String phoneNumber,
     required String password,
   }) async {
     try {
       final reuslt = await authService.Login(
-        username: username,
+        phoneNumber: phoneNumber,
         password: password,
       );
       return right(reuslt);

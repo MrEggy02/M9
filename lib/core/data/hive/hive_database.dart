@@ -1,13 +1,16 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:encrypt/encrypt.dart';
+import 'package:encrypt/encrypt_io.dart';
 import 'package:hive_ce/hive.dart';
+import 'package:m9/feature/auth/domain/models/user_model.dart';
 import 'package:path_provider/path_provider.dart';
 
 class HiveDatabase {
   static BoxCollection? box;
 
-  Future<BoxCollection?> hiveDatabase() async {
+  static Future<BoxCollection?> hiveDatabase() async {
     Directory directory = await getApplicationDocumentsDirectory();
     box = await BoxCollection.open(
       'm9-driver', // Name of your database
@@ -85,12 +88,38 @@ class HiveDatabase {
     return true;
   }
 
-  static Future<dynamic> getProfile() async {
+  static Future<UserModel> getProfile() async {
     final userBox = await box!.openBox<Map>('auth');
     final data = await userBox.getAll(['profile']);
     final respone = jsonDecode(data[0]!['data']);
+    final user = UserModel.fromJson(respone);
+    print(respone);
+    return user;
+  }
 
-    return respone;
+  static Future<bool> saveLoginRemember({
+    required String phoneNumber,
+    required String password,
+  }) async {
+    final key = Key.fromLength(32);
+    final iv = IV.fromLength(8);
+    final encrypter = Encrypter(Salsa20(key));
+    final encrypted = encrypter.encrypt(password, iv: iv);
+    final authBox = await box!.openBox('auth');
+    await authBox.put('saved_phoneNumber', phoneNumber);
+    await authBox.put('saved_password', encrypted.base64);
+    return true;
+  }
+
+  static Future<dynamic> getLoginRemember() async {
+    final key = Key.fromLength(32);
+    final iv = IV.fromLength(8);
+    final encrypter = Encrypter(Salsa20(key));
+    final authBox = await box!.openBox('auth');
+    final phoneNumber = await authBox.get('saved_phoneNumber');
+    final pass = await authBox.get('saved_password');
+    final password = encrypter.decrypt(pass, iv: iv);
+    return {phoneNumber, password};
   }
 
   static Future<bool> saveProfileImage({required File file}) async {

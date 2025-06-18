@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:geolocator/geolocator.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:m9/core/routes/app_routes.dart';
-import 'package:m9/feature/drivermode/presentation/tracking/page/tracking_driver.dart';
 import 'package:nav_service/nav_service.dart';
+
+import '../../cubit/home_cubit.dart';
+import '../../cubit/home_state.dart';
 
 class ServiceUser extends StatefulWidget {
   const ServiceUser({super.key});
@@ -20,37 +22,46 @@ class _ServiceUserState extends State<ServiceUser> {
  
   @override
   Widget build(BuildContext context) {
-    return GridView.builder(
-      shrinkWrap: true,
-      primary: false,
-      padding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
-      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 3,
-        childAspectRatio: 1.2,
-        crossAxisSpacing: 10,
-      ),
-      itemCount: serviceData.length,
-      itemBuilder: (context, index) {
-        return GestureDetector(
-          onTap: () {
-          NavService.pushReplacementNamed(AppRoutes.find_driver);
-           
-          },
-          child: Card(
-            elevation: 5,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Image.asset(serviceData[index]['icon'], height: 50),
-                Text(
-                  serviceData[index]['title'],
-                  style: TextStyle(fontSize: 15),
-                ),
-              ],
-            ),
-          ),
-        );
+    return BlocConsumer<HomeCubit, HomeState>(
+      listener: (context, state) {
+        if (state.homeStatus == HomeStatus.failure) {}
       },
+
+      builder: (context, state) {
+        var cubit = context.read<HomeCubit>();
+        return GridView.builder(
+          shrinkWrap: true,
+          primary: false,
+          padding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: 3,
+            childAspectRatio: 1.2,
+            crossAxisSpacing: 10,
+          ),
+          itemCount: serviceData.length,
+          itemBuilder: (context, index) {
+            return GestureDetector(
+              onTap: () {
+              NavService.pushReplacementNamed(AppRoutes.find_driver);
+               
+              },
+              child: Card(
+                elevation: 5,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Image.asset(serviceData[index]['icon'], height: 50),
+                    Text(
+                      serviceData[index]['title'],
+                      style: TextStyle(fontSize: 15),
+                    ),
+                  ],
+                ),
+              ),
+            );
+          },
+        );
+      }
     );
   }
 }

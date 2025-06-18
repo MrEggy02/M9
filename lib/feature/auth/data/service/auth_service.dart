@@ -3,11 +3,25 @@ import 'package:m9/core/data/hive/hive_database.dart';
 import 'package:m9/core/data/network/api_path.dart';
 import 'package:m9/core/data/network/network_service.dart';
 import 'package:m9/core/data/response/api_response.dart';
+import 'package:m9/feature/auth/domain/models/user_model.dart';
 
 class AuthService {
   final NetworkCall _networkCall = NetworkCall();
+
+  Future<UserModel?> getProfile() async {
+    try {
+      final result = await HiveDatabase.getProfile();
+      if (result.id == null) {
+        return null;
+      }
+      return result;
+    } catch (e) {
+      return null;
+    }
+  }
+
   Future<bool> Login({
-    required String username,
+    required String phoneNumber,
     required String password,
   }) async {
     try {
@@ -15,7 +29,7 @@ class AuthService {
         'Content-type': 'application/json',
         'Accept': 'application/json',
       };
-      final body = {"username": username, "password": password};
+      final body = {"phoneNumber": phoneNumber, "password": password};
       final ApiResponse response = await _networkCall.request(
         paths: ApiPaths.loginPath,
         method: ApiPaths.postRequest,
@@ -24,6 +38,7 @@ class AuthService {
       );
 
       if (response.status == true) {
+        print("=====>${response.data}");
         await HiveDatabase.saveToken(
           token: response.data['token'],
           refresh: response.data['refresh_token'],
