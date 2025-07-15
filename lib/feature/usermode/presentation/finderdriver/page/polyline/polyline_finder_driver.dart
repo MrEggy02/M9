@@ -57,28 +57,28 @@ class _PolylineFinderDriverState extends State<PolylineFinderDriver> {
               MapWidget(
                 key: ValueKey("mapWidget"),
                 onMapCreated: (MapboxMap map) {
-                  cubit.mapboxMap = map;
+                  // cubit.mapboxMap = map;
               
                   // // Enable location tracking
-                  cubit.mapboxMap!.location.updateSettings(
-                    LocationComponentSettings(
-                      enabled: true,
-                      pulsingEnabled: true,
-                    ),
-                  );
+                  // cubit.mapboxMap!.location.updateSettings(
+                  //   LocationComponentSettings(
+                  //     enabled: true,
+                  //     pulsingEnabled: true,
+                  //   ),
+                  // );
                 },
               
                 onMapIdleListener: (mapIdleEventData) {},
                 styleUri: MapboxStyles.MAPBOX_STREETS,
                 cameraOptions: CameraOptions(
-              
+                 
                   center: Point(
                     coordinates: Position(
                       cubit.currentPositionLatLng.longitude,
                       cubit.currentPositionLatLng.latitude,
                     ),
                   ),
-                  zoom: 13.5,
+                  zoom: 13,
                 ),
               ),
               Positioned(

@@ -1,6 +1,11 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
-import 'package:m9/core/config/theme/app_color.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:m9/core/constants/app_constants.dart';
+
+import 'package:m9/feature/usermode/presentation/home/cubit/home_cubit.dart';
+import 'package:m9/feature/usermode/presentation/home/cubit/home_state.dart';
 
 class BannerDriver extends StatefulWidget {
   const BannerDriver({super.key});
@@ -10,44 +15,53 @@ class BannerDriver extends StatefulWidget {
 }
 
 class _BannerDriverState extends State<BannerDriver> {
-  List<String> banner = [
-    "assets/images/drivermode/banner1.png",
-    "assets/images/drivermode/banner2.png",
-  ];
-  int _current = 0;
+  int current = 0;
   @override
   Widget build(BuildContext context) {
-    return Column(children: [_banner(), SizedBox(height: 5)]);
-  }
+    return BlocConsumer<HomeCubit, HomeState>(
+      listener: (context, state) {
+        if (state.homeStatus == HomeStatus.failure) {
+          print('login error=>${state.error}');
+        }
+      },
+      builder: (context, state) {
+        var size = MediaQuery.of(context).size;
+        return Column(
+          children: [
+            CarouselSlider(
+              options: CarouselOptions(
+                height: size.height / 5,
+                autoPlay: true,
 
-  _banner() {
-    return CarouselSlider(
-      options: CarouselOptions(
-        height: 200.0,
-        autoPlay: true,
-
-        viewportFraction: 1,
-        onPageChanged: (index, reson) {
-          setState(() {
-            _current = index;
-          });
-        },
-      ),
-      items:
-          banner
-              .map(
-                (i) => Container(
-                  width: MediaQuery.of(context).size.width,
-                  margin: EdgeInsets.symmetric(horizontal: 15.0),
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(10),
-                    child: Image.asset(i, fit: BoxFit.cover),
-                  ),
-                ),
-              )
-              .toList(),
+                viewportFraction: 1,
+                onPageChanged: (index, reson) {
+                  setState(() {
+                    current = index;
+                  });
+                },
+              ),
+              items:
+                  state.banners!
+                      .map(
+                        (i) => Container(
+                          width: MediaQuery.of(context).size.width,
+                          margin: EdgeInsets.symmetric(horizontal: 15.0),
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(10),
+                            child: CachedNetworkImage(
+                              imageUrl:
+                                  AppConstants.imageUrl + i.image.toString(),
+                              fit: BoxFit.cover,
+                            ),
+                          ),
+                        ),
+                      )
+                      .toList(),
+            ),
+            SizedBox(height: 5),
+          ],
+        );
+      },
     );
   }
-
- 
 }

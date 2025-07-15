@@ -19,7 +19,7 @@ class PhoneInputField extends StatelessWidget {
       },
       builder: (context, state) {
         var cubit = context.read<AuthCubit>();
-        var size = MediaQuery.of(context).size;
+      
         return Container(
           decoration: BoxDecoration(
             border: Border.all(color: Colors.grey.shade300),

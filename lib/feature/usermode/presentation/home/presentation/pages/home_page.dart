@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:m9/core/config/theme/app_color.dart';
 import 'package:m9/feature/drivermode/presentation/home/widget/%E0%BA%B6banner_driver.dart';
 import 'package:m9/feature/drivermode/presentation/home/widget/drawer_driver.dart';
@@ -18,6 +19,13 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
+
+  @override
+  void initState() {
+    getPermission();
+    super.initState();
+  }
+
   Future<Position?> getPermission() async {
     bool serviceEnabled;
     LocationPermission permission;
@@ -28,7 +36,7 @@ class _HomePageState extends State<HomePage> {
 
     permission = await Geolocator.checkPermission();
     if (permission == LocationPermission.denied) {
-      await Geolocator.requestPermission();
+      showMyDialog();
 
       if (permission == LocationPermission.denied) {
         return null;
@@ -39,22 +47,76 @@ class _HomePageState extends State<HomePage> {
       return null;
     }
     Position? position = await Geolocator.getLastKnownPosition();
-    {
-      if (position != null) {
-        return position;
-      } else {
-        return await Geolocator.getCurrentPosition(
-          // ignore: deprecated_member_use
-          desiredAccuracy: LocationAccuracy.high,
-        );
-      }
+
+    if (position != null) {
+      return position;
+    } else {
+      return await Geolocator.getCurrentPosition(
+        // ignore: deprecated_member_use
+        desiredAccuracy: LocationAccuracy.high,
+      );
     }
   }
 
-  @override
-  void initState() {
-    super.initState();
-    getPermission();
+  // // Alert dialog opening when getPermission() return null
+  Future<void> showMyDialog() async {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false, // user must tap button!
+      builder: (BuildContext context) {
+        return AlertDialog(
+          backgroundColor: AppColors.backgroundColor,
+          content: SingleChildScrollView(
+            child: ListBody(
+              children: const <Widget>[
+                Text(
+                  "M9 driver",
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: AppColors.primaryColor,
+                  ),
+                ),
+                SizedBox(height: 15),
+                Text(
+                  'collects location data to allow tracking when there is no internet and records your location while traveling online and offline, even when the app is closed or not in use.',
+                  style: TextStyle(
+                    fontSize: 18,
+                    color: AppColors.primaryColorBlack,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            Row(
+              children: [
+                TextButton(
+                  child: const Text(
+                    'DENY',
+                    style: TextStyle(color: AppColors.primaryColorBlack),
+                  ),
+                  onPressed: () {
+                    SystemNavigator.pop();
+                  },
+                ),
+                Spacer(),
+                TextButton(
+                  child: const Text(
+                    'ACCEPT',
+                    style: TextStyle( color: AppColors.primaryColor,),
+                  ),
+                  onPressed: () {
+                    Geolocator.requestPermission();
+                    Navigator.of(context).pop();
+                  },
+                ),
+              ],
+            ),
+          ],
+        );
+      },
+    );
   }
 
   @override

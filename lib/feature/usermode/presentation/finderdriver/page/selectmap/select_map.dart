@@ -34,8 +34,8 @@ class _SelectMapState extends State<SelectMap> {
             children: [
               GoogleMap(
                 initialCameraPosition: CameraPosition(
-                  target: cubit.currentCenter,
-                  zoom: 18,
+                  target: cubit.currentCenter!,
+                  zoom: 14,
                 ),
                 onCameraMove: cubit.onCameraMove,
                 onCameraIdle: cubit.onCameraIdle,
@@ -78,7 +78,7 @@ class _SelectMapState extends State<SelectMap> {
                   ),
                   child: GestureDetector(
                     onTap: () async {
-                      cubit.fetchAndDisplayRoute();
+                     // cubit.fetchAndDisplayRoute();
                       Navigator.pushReplacementNamed(
                         context,
                         AppRoutes.polylinefinderdriver,
@@ -92,13 +92,17 @@ class _SelectMapState extends State<SelectMap> {
                         borderRadius: BorderRadius.circular(10),
                       ),
                       child: Center(
-                        child: Text(
-                          "ສຳເລັດ",
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 16,
-                          ),
-                        ),
+                        child:
+                            state.finderDriverStatus ==
+                                    FinderDriverStatus.loading
+                                ? CircularProgressIndicator(color: Colors.black)
+                                : Text(
+                                  "ສຳເລັດ",
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 16,
+                                  ),
+                                ),
                       ),
                     ),
                   ),

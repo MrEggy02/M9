@@ -12,11 +12,11 @@ class HomeService {
   final NetworkCall _networkCall = NetworkCall();
   Future<List<ServiceModel>?> getService() async {
     try {
-      final token = await HiveDatabase.getToken();
+     // final token = await HiveDatabase.getToken();
       Map<String, String> headers = {
         'Content-type': 'application/json',
         'Accept': 'application/json',
-        'Authorization': 'Bearer ${token['token']}',
+        //'Authorization': 'Bearer ${token['token']}',
       };
       final ApiResponse response = await _networkCall.request(
         paths: ApiPaths.getservicePath,
@@ -36,17 +36,18 @@ class HomeService {
 
   Future<List<BannerModel>?> getBanner() async {
     try {
-      final token = await HiveDatabase.getToken();
+     // final token = await HiveDatabase.getToken();
       Map<String, String> headers = {
         'Content-type': 'application/json',
         'Accept': 'application/json',
-        'Authorization': 'Bearer ${token['token']}',
+       // 'Authorization': 'Bearer ${token['token']}',
       };
       final ApiResponse response = await _networkCall.request(
         paths: ApiPaths.getbannerPath,
         method: ApiPaths.getRequest,
         headers: headers,
       );
+      print(response.data);
       if (response.status == true) {
         final result = bannerModelFromJson(jsonEncode(response.data['data']));
         return result;
@@ -60,11 +61,11 @@ class HomeService {
 
   Future<List<CartTypeModel>?> getCarType() async {
     try {
-      final token = await HiveDatabase.getToken();
+     // final token = await HiveDatabase.getToken();
       Map<String, String> headers = {
         'Content-type': 'application/json',
         'Accept': 'application/json',
-        'Authorization': 'Bearer ${token['token']}',
+      //  'Authorization': 'Bearer ${token['token']}',
       };
       final ApiResponse response = await _networkCall.request(
         paths: ApiPaths.getCarTypePath,
@@ -72,6 +73,7 @@ class HomeService {
         headers: headers,
       );
       if (response.status == true) {
+        print(response.data);
         final result = cartTypeModelFromJson(jsonEncode(response.data['data']));
         return result;
       }

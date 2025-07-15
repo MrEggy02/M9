@@ -45,7 +45,40 @@
 	<true/>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
+
 	<key>NSLocationWhenInUseUsageDescription</key>
-    <string>Location required to permmission</string>
+	<string>Location required to permission</string>
+
+	<!-- ✅ Only allow HTTPS connections -->
+	<key>NSAppTransportSecurity</key>
+	<dict>
+		<key>NSAllowsArbitraryLoads</key>
+		<false/>
+	</dict>
+
+	<!-- ✅ Local Network Debugging -->
+	<key>NSLocalNetworkUsageDescription</key>
+	<string>We use your local network for debugging purposes.</string>
+	<key>NSBonjourServices</key>
+	<array>
+		<string>_dartobservatory._tcp</string>
+	</array>
+
+	<!-- ✅ Flutter WebView support -->
+	<key>io.flutter.embedded_views_preview</key>
+	<true/>
+	<!-- ✅ Google Sigin -->
+	<!-- <string>587488109812-4qae75b30kncv0e0nu319mh3co01vh8t.apps.googleusercontent.com</string> -->
+	<key>CFBundleURLTypes</key>
+	<array>
+  	<dict>
+    <key>CFBundleURLSchemes</key>
+    <array>
+      <string>com.googleusercontent.apps.587488109812-4qae75b30kncv0e0nu319mh3co01vh8t</string>
+    </array>
+	<!-- ✅ Google Sigin -->
+  </dict>
+</array>
+
 </dict>
 </plist>

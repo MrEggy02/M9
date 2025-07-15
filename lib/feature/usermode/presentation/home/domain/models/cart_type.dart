@@ -9,6 +9,7 @@ List<CartTypeModel> cartTypeModelFromJson(String str) =>
 class CartTypeModel {
   final String? id;
   final String? code;
+  final String? icon;
   final String? name;
   final String? detail;
   final int? capacity;
@@ -20,6 +21,7 @@ class CartTypeModel {
   CartTypeModel({
     this.id,
     this.code,
+    this.icon,
     this.name,
     this.detail,
     this.capacity,
@@ -34,6 +36,7 @@ class CartTypeModel {
     return CartTypeModel(
       id: json['id'],
       code: json['code'],
+      icon: json['icon'],
       name: json['name'],
       detail: json['detail'],
       capacity: json['capacity'],
@@ -49,6 +52,7 @@ class CartTypeModel {
     return {
       'id': id,
       'code': code,
+      'icon': icon,
       'name': name,
       'detail': detail,
       'capacity': capacity,

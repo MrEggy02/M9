@@ -55,7 +55,9 @@ class HomeCubit extends Cubit<HomeState> {
         );
       },
       (success) {
-        emit(state.copyWith(homeStatus: HomeStatus.success, banners: success));
+        emit(state.copyWith(
+          homeStatus: HomeStatus.success, 
+          banners: success));
       },
     );
   }

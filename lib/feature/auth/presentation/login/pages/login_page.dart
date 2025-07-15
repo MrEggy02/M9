@@ -1,9 +1,13 @@
 // lib/presentation/screens/login_screen.dart
 // ໄຟລ໌ສຳລັບໜ້າຈໍເຂົ້າສູ່ລະບົບ
 
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:m9/core/data/hive/hive_database.dart';
 import 'package:m9/core/routes/app_routes.dart';
 import 'package:m9/feature/auth/cubit/auth_cubit.dart';
@@ -22,6 +26,10 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPageState extends State<LoginPage> {
   final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
+ 
+
+
+
   bool remember = false;
   @override
   Widget build(BuildContext context) {
@@ -38,6 +46,7 @@ class _LoginPageState extends State<LoginPage> {
         return Scaffold(
           appBar: AppBar(
             backgroundColor: Colors.white,
+            centerTitle: true,
             title: const Text(
               'ຍິນດີຕ້ອນຮັບ',
               style: TextStyle(color: Colors.black),
@@ -131,31 +140,37 @@ class _LoginPageState extends State<LoginPage> {
                     ),
                     Padding(
                       padding: const EdgeInsets.symmetric(vertical: 10),
-                      child: Container(
-                        height: size.height / 16,
-                        width: size.width / 1.1,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(10),
-                          color: Colors.white,
-                          border: Border.all(color: Colors.grey),
-                        ),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 10,
+                      child: GestureDetector(
+                        onTap: () {
+                          cubit.signInWithGoogle();
+                       
+                        },
+                        child: Container(
+                          height: size.height / 16,
+                          width: size.width / 1.1,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(10),
+                            color: Colors.white,
+                            border: Border.all(color: Colors.grey),
+                          ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 10,
+                                ),
+                                child: SvgPicture.asset(
+                                  'assets/icons/google_ic.svg',
+                                  fit: BoxFit.cover,
+                                ),
                               ),
-                              child: SvgPicture.asset(
-                                'assets/icons/google_ic.svg',
-                                fit: BoxFit.cover,
+                              Text(
+                                "ເຂົ້າສູ່ລະບົບດ້ວຍ",
+                                style: TextStyle(fontWeight: FontWeight.bold),
                               ),
-                            ),
-                            Text(
-                              "ເຂົ້າສູ່ລະບົບດ້ວຍ",
-                              style: TextStyle(fontWeight: FontWeight.bold),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
                       ),
                     ),

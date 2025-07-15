@@ -12,15 +12,90 @@
           "package_name": "com.m9driver.ap"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "587488109812-vqfebts79ujqq3r364aingaortcbbiv3.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.m9driver.ap",
+            "certificate_hash": "bed26192cd3e491fcd0576bdfe77364beed862b5"
+          }
+        },
+        {
+          "client_id": "587488109812-bca43vgcagi2scra7hblach05cotne4v.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyAOPF1k85xPLBR5roglJOelvo8zIRfDOgQ"
+        },
+        {
+          "current_key": "AIzaSyAF9c3vWDLC8Bo3KkFQj2WA8d-Dg4bRGYk"
         }
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "587488109812-bca43vgcagi2scra7hblach05cotne4v.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "587488109812-4qae75b30kncv0e0nu319mh3co01vh8t.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.m9driver.app"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:587488109812:android:378f527212bd80f4f96aa1",
+        "android_client_info": {
+          "package_name": "com.m9driver.app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "587488109812-uln7uh50o60j8j5s7n9e0mhctjq6fein.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.m9driver.app",
+            "certificate_hash": "816e9d2870662c7d30198160c306c965ad738856"
+          }
+        },
+        {
+          "client_id": "587488109812-bca43vgcagi2scra7hblach05cotne4v.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAOPF1k85xPLBR5roglJOelvo8zIRfDOgQ"
+        },
+        {
+          "current_key": "AIzaSyAF9c3vWDLC8Bo3KkFQj2WA8d-Dg4bRGYk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "587488109812-bca43vgcagi2scra7hblach05cotne4v.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "587488109812-4qae75b30kncv0e0nu319mh3co01vh8t.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.m9driver.app"
+              }
+            }
+          ]
         }
       }
     }

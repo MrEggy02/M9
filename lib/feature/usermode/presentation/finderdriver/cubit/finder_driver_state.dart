@@ -2,6 +2,7 @@
 import 'package:equatable/equatable.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:m9/feature/usermode/presentation/finderdriver/domain/models/polyline_model.dart';
 
 enum FinderDriverStatus { initial, loading, success, failure }
 
@@ -9,6 +10,9 @@ class FinderDriverState extends Equatable {
   final String? error;
   final bool? isCheck;
   final FinderDriverStatus? finderDriverStatus;
+  final PolylineModel? polylineDataModel;
+  final LatLng? currentCenter;
+  final dynamic polyline;
   final List<LatLng>? polylinePoints;
   final Set<Polyline>? polylines;
   final Set<Circle>? circles;
@@ -23,8 +27,10 @@ class FinderDriverState extends Equatable {
   final bool? loading;
   const FinderDriverState({
     this.error,
+    this. currentCenter,
     this.finderDriverStatus,
     this.currenIndex,
+    this.polyline,
     this.indexActive,
     this.mapType,
     this.markerIcon,
@@ -34,6 +40,7 @@ class FinderDriverState extends Equatable {
     this.index,
     this.loading,
     this.start,
+    this.polylineDataModel,
     this.polylinePoints = const [],
     this.polylines = const {},
     this.circles = const {},
@@ -46,8 +53,10 @@ class FinderDriverState extends Equatable {
     List<LatLng>? polylinePoints,
     Set<Polyline>? polylines,
     Set<Circle>? circles,
+    PolylineModel? polylineModel,
     bool? isCheck,
     String? error,
+    dynamic polyline,
     int? currenIndex,
     int? indexActive,
     Position? position,
@@ -55,7 +64,7 @@ class FinderDriverState extends Equatable {
     bool? isForms,
     bool? isStart,
     int? start,
-    LatLng? currentPositionLatLng,
+    LatLng? currentCenter,
     int? index,
     bool? loading,
   }) {
@@ -64,8 +73,11 @@ class FinderDriverState extends Equatable {
       isCheck: isCheck ?? this.isCheck,
       error: error ?? this.error,
       mapType: mapType ?? this.mapType,
+      polyline: polylines ?? this.polyline,
       currenIndex: currenIndex ?? this.currenIndex,
+      currentCenter: currentCenter ?? this.currentCenter,
       indexActive: indexActive ?? this.indexActive,
+      polylineDataModel: polylineModel ?? this.polylineDataModel,
       index: index ?? this.index,
       isForms: isForms ?? this.isForms,
       isStart: isStart ?? this.isStart,
@@ -85,8 +97,10 @@ class FinderDriverState extends Equatable {
     finderDriverStatus,
     currenIndex,
     mapType,
+    polyline,
     isForms,
     isStart,
+    polylineDataModel,
     start,
     markerIcon,
     polylinePoints,

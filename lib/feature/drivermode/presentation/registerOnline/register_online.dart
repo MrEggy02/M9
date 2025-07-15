@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:m9/core/config/theme/app_color.dart';
+import 'package:m9/core/routes/app_routes.dart';
+import 'package:m9/feature/drivermode/cubit/driver_cubit.dart';
 import 'package:m9/feature/drivermode/presentation/home/widget/drawer_driver.dart';
 import 'package:m9/feature/drivermode/presentation/registerOnline/widget/webview_register.dart';
+import 'package:nav_service/nav_service.dart';
 
 class RegisterOnline extends StatefulWidget {
   const RegisterOnline({super.key});
@@ -20,10 +24,8 @@ class _RegisterOnlineState extends State<RegisterOnline> {
     return Scaffold(
       key: scaffoldKey,
       drawer: DrawerDriver(),
-
       bottomNavigationBar: SizedBox(
         height: size.height / 4,
-
         child: Stack(
           children: [
             Positioned(
@@ -38,17 +40,25 @@ class _RegisterOnlineState extends State<RegisterOnline> {
             Positioned(
               right: 20,
               left: 20,
-              child: Container(
-                height: size.height / 16,
-                width: size.width / 1,
-                decoration: BoxDecoration(
-                  color: AppColors.primaryColor,
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                child: Center(
-                  child: Text(
-                    "ມິບັນຊີຢູ່ແລ້ວ",
-                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+              child: GestureDetector(
+                onTap: () {
+                  NavService.pushReplacementNamed(AppRoutes.home_driver);
+                },
+                child: Container(
+                  height: size.height / 16,
+                  width: size.width / 1,
+                  decoration: BoxDecoration(
+                    color: AppColors.primaryColor,
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: Center(
+                    child: Text(
+                      "ມິບັນຊີຢູ່ແລ້ວ",
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
                   ),
                 ),
               ),
@@ -79,7 +89,7 @@ class _RegisterOnlineState extends State<RegisterOnline> {
         child: Column(
           children: [
             Padding(
-              padding: const EdgeInsets.symmetric(vertical: 50,horizontal: 15),
+              padding: const EdgeInsets.symmetric(vertical: 50, horizontal: 15),
               child: Stack(
                 children: [
                   GestureDetector(
@@ -104,13 +114,16 @@ class _RegisterOnlineState extends State<RegisterOnline> {
                       child: Center(child: Icon(Icons.menu, size: 30)),
                     ),
                   ),
-                  
+
                   Center(
                     child: Padding(
                       padding: const EdgeInsets.symmetric(vertical: 20),
                       child: Text(
                         "ໂໝດຄົນຂັບ",
-                        style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                     ),
                   ),
@@ -189,8 +202,24 @@ class _RegisterOnlineState extends State<RegisterOnline> {
             Padding(
               padding: const EdgeInsets.only(top: 20),
               child: GestureDetector(
-                onTap: (){
-                  Navigator.push(context, MaterialPageRoute(builder: (context)=> LoadingWebView()));
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder:
+                          (_) => BlocProvider(
+                            create:
+                                (BuildContext context) =>
+                                    DriverCubit(context: context)
+                                      ..loadWebView(),
+                            child: const LoadingWebView(),
+                          ),
+                    ),
+                  );
+                  // Navigator.push(
+                  //   context,
+                  //   MaterialPageRoute(builder: (context) => LoadingWebView()),
+                  // );
                 },
                 child: Container(
                   height: size.height / 13,
@@ -212,7 +241,7 @@ class _RegisterOnlineState extends State<RegisterOnline> {
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 5),
                         child: Image.asset(
-                          'assets/images/usermode/ev.png',
+                          'assets/images/drivermode/car.png',
                           fit: BoxFit.cover,
                         ),
                       ),
@@ -266,7 +295,7 @@ class _RegisterOnlineState extends State<RegisterOnline> {
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 0),
                       child: Text(
-                        "ຜູ້ໃຫ້ບໍລະການຈັດສົດ",
+                        "ຜູ້ໃຫ້ບໍລະການຈັດສົ່ງ",
                         style: TextStyle(fontWeight: FontWeight.bold),
                       ),
                     ),
@@ -283,6 +312,53 @@ class _RegisterOnlineState extends State<RegisterOnline> {
                 ),
               ),
             ),
+
+            // Padding(
+            //   padding: const EdgeInsets.only(top: 20),
+            //   child: Container(
+            //     height: size.height / 13,
+            //     width: size.width / 1.1,
+            //     decoration: BoxDecoration(
+            //       borderRadius: BorderRadius.circular(10),
+            //       color: Colors.white,
+            //       boxShadow: [
+            //         BoxShadow(
+            //           color: Colors.black.withOpacity(0.2),
+            //           spreadRadius: 2,
+            //           blurRadius: 8,
+            //           offset: Offset(2, 4),
+            //         ),
+            //       ],
+            //     ),
+            //     child: Row(
+            //       children: [
+            //         Padding(
+            //           padding: const EdgeInsets.symmetric(horizontal: 10),
+            //           child: Image.asset(
+            //             'assets/images/usermode/ev.png',
+            //             fit: BoxFit.cover,
+            //           ),
+            //         ),
+            //         Padding(
+            //           padding: const EdgeInsets.symmetric(horizontal: 0),
+            //           child: Text(
+            //             "ຜູ້ໃຫ້ເຊົ່າລົດ-ຮັບເໝົາ",
+            //             style: TextStyle(fontWeight: FontWeight.bold),
+            //           ),
+            //         ),
+            //         Spacer(),
+            //         Padding(
+            //           padding: const EdgeInsets.symmetric(horizontal: 15),
+            //           child: Icon(
+            //             Icons.arrow_forward_ios,
+            //             color: Colors.grey,
+            //             size: 15,
+            //           ),
+            //         ),
+            //       ],
+            //     ),
+            //   ),
+            // ),
           ],
         ),
       ),

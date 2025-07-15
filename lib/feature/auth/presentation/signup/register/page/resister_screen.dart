@@ -3,8 +3,6 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:m9/core/data/response/messageHelper.dart';
-import 'package:m9/core/routes/app_routes.dart';
 import 'package:m9/feature/auth/cubit/auth_cubit.dart';
 import 'package:m9/feature/auth/cubit/auth_state.dart';
 import '../widgets/phone_input_field.dart';
@@ -18,7 +16,6 @@ class RegisterScreen extends StatefulWidget {
 }
 
 class _RegisterScreenState extends State<RegisterScreen> {
- bool isCheck = false;
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<AuthCubit, AuthState>(
@@ -71,7 +68,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   const PhoneInputField(),
                   const SizedBox(height: 16),
                   // ເຊັກບັອກສ໌ຍອມຮັບເງື່ອນໄຂ
-                  _buildTermsCheckbox(),
+                  _buildTermsCheckbox(cubit),
                   const SizedBox(height: 60),
                   // ປຸ່ມລົງທະບຽນ
                   const RegisterButton(),
@@ -83,7 +80,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       const Text('ມີບັນຊີແລ້ວ ?'),
                       TextButton(
                         onPressed: () {
-                         
                           Navigator.pop(context);
                         },
                         child: const Text(
@@ -111,18 +107,18 @@ class _RegisterScreenState extends State<RegisterScreen> {
   }
 
   // ຟັງຊັນສຳລັບສ້າງເຊັກບັອກສ໌ຍອມຮັບເງື່ອນໄຂ
-  Widget _buildTermsCheckbox() {
+  Widget _buildTermsCheckbox(AuthCubit cubit) {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.center,
-     
+
       children: [
         Transform.scale(
           scale: 1.2,
           child: Checkbox(
-            value: isCheck,
+            value: cubit.isCheck,
             onChanged: (value) {
               setState(() {
-                isCheck = value!;
+                cubit.isCheck = value!;
               });
             },
             shape: RoundedRectangleBorder(
@@ -131,7 +127,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
             side: const BorderSide(color: Colors.amber),
           ),
         ),
-       
+
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 5),
           child: Text(

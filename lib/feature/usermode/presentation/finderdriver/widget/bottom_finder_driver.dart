@@ -1,13 +1,17 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:m9/core/config/theme/app_color.dart';
+import 'package:m9/core/constants/app_constants.dart';
 import 'package:m9/feature/usermode/presentation/finderdriver/cubit/finder_driver_cubit.dart';
 import 'package:m9/feature/usermode/presentation/finderdriver/cubit/finder_driver_state.dart';
 import 'package:m9/feature/usermode/presentation/finderdriver/widget/popup_select_map.dart';
+import 'package:m9/feature/usermode/presentation/home/cubit/home_cubit.dart';
+import 'package:m9/feature/usermode/presentation/home/cubit/home_state.dart';
 
 class BottomFinderDriver extends StatefulWidget {
   final scaffoldKey;
-  const BottomFinderDriver({super.key,required this.scaffoldKey});
+  const BottomFinderDriver({super.key, required this.scaffoldKey});
 
   @override
   State<BottomFinderDriver> createState() => _BottomFinderDriverState();
@@ -21,13 +25,6 @@ class _BottomFinderDriverState extends State<BottomFinderDriver> {
     });
   }
 
-  List<dynamic> carType = [
-    {"icon": "assets/images/usermode/car.png", "title": "ລົດໂດຍສານ"},
-    {"icon": "assets/images/usermode/ev.png", "title": "ລົດໄຟຟ້າ EV"},
-    {"icon": "assets/images/usermode/motobike.png", "title": "ລົດຈັກ"},
-    {"icon": "assets/images/usermode/delivery.png", "title": "ຈັດສົ່ງສິນຄ້າ"},
-  ];
-
   @override
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
@@ -37,7 +34,6 @@ class _BottomFinderDriverState extends State<BottomFinderDriver> {
       },
       builder: (context, state) {
         var cubit = context.read<FinderDriverCubit>();
-    
         return SingleChildScrollView(
           child: Container(
             height: size.height / 2.2,
@@ -58,59 +54,82 @@ class _BottomFinderDriverState extends State<BottomFinderDriver> {
             ),
             child: Column(
               children: [
-                Padding(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 10,
-                    vertical: 20,
-                  ),
-                  child: Container(
-                    height: size.height / 10,
-                    decoration: BoxDecoration(
-                      color: Colors.grey,
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    child: SingleChildScrollView(
-                      scrollDirection: Axis.horizontal,
-                      child: Row(
-                        children:
-                            carType.map((data) {
-                              int index = carType.indexOf(data);
-                              return Padding(
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 10,
-                                ),
-                                child: GestureDetector(
-                                  onTap: () {
-                                    _ontap(index);
-                                  },
-                                  child: Container(
-                                    height: size.height / 12,
-                                    width: size.width / 5,
-                                    decoration: BoxDecoration(
-                                      color:
-                                          currentIndex == index
-                                              ? Colors.white
-                                              : Colors.grey,
-                                      borderRadius: BorderRadius.circular(10),
-                                    ),
-                                    child: Column(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children: [
-                                        Image.asset(data['icon']),
-                                        Text(
-                                          data['title'],
-                                          style: TextStyle(fontSize: 12),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                              );
-                            }).toList(),
+                BlocConsumer<HomeCubit, HomeState>(
+                  listener: (context, state) {
+                    if (state.homeStatus == HomeStatus.failure) {}
+                  },
+                  builder: (context, state) {
+                    return Padding(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 10,
+                        vertical: 20,
                       ),
-                    ),
-                  ),
+                      child: Container(
+                        height: size.height / 10,
+                        decoration: BoxDecoration(
+                          color: Colors.grey,
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        child: SingleChildScrollView(
+                          scrollDirection: Axis.horizontal,
+                          child: Row(
+                            children:
+                                state.carTypes!.map((data) {
+                                  int index = state.carTypes!.indexOf(data);
+                                  return Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: 10,
+                                    ),
+                                    child: GestureDetector(
+                                      onTap: () {
+                                        _ontap(index);
+                                      },
+                                      child: Container(
+                                        height: size.height / 12,
+                                        width: size.width / 5,
+                                        decoration: BoxDecoration(
+                                          color:
+                                              currentIndex == index
+                                                  ? Colors.white
+                                                  : Colors.grey,
+                                          borderRadius: BorderRadius.circular(
+                                            10,
+                                          ),
+                                        ),
+                                        child:
+                                            state.carTypes![0].icon == null
+                                                ? Center(
+                                                  child:
+                                                      CircularProgressIndicator(),
+                                                )
+                                                : Column(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.center,
+                                                  children: [
+                                                    CachedNetworkImage(
+                                                      imageUrl:
+                                                          AppConstants
+                                                              .imageUrl +
+                                                          data.icon.toString(),
+                                                    ),
+
+                                                    Text(
+                                                      data.name.toString(),
+                                                      style: TextStyle(
+                                                        fontSize: 12,
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                      ),
+                                    ),
+                                  );
+                                }).toList(),
+                          ),
+                        ),
+                      ),
+                    );
+                  },
                 ),
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -178,11 +197,11 @@ class _BottomFinderDriverState extends State<BottomFinderDriver> {
                           child: GestureDetector(
                             onTap: () {
                               cubit.onTapForm(1);
-                              widget.scaffoldKey!.currentState?.showBottomSheet((
-                                context,
-                              ) {
-                                return PopUpSelectMap();
-                              });
+                              widget.scaffoldKey!.currentState?.showBottomSheet(
+                                (context) {
+                                  return PopUpSelectMap();
+                                },
+                              );
                             },
                             child: Container(
                               height: size.height / 13,

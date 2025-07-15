@@ -29,7 +29,9 @@ class ReviewFinderDriver extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 TextButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    NavService.pop();
+                  },
                   child: Text(
                     "ໄວທີ່ຫຼັງ",
                     style: TextStyle(fontSize: 18, color: Colors.blue),
@@ -37,8 +39,9 @@ class ReviewFinderDriver extends StatelessWidget {
                 ),
                 TextButton(
                   onPressed: () {
-                    NavService.pop();
-                    cubit.scaffoldKey = null;
+                   // NavService.pop();
+                    //cubit.scaffoldKey = null;
+                    cubit.onTap(0);
                     Navigator.pushNamed(context, AppRoutes.homepage);
                     
                   },

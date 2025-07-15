@@ -38,11 +38,12 @@ class AuthService {
       );
 
       if (response.status == true) {
-        print("=====>${response.data}");
+       
         await HiveDatabase.saveToken(
           token: response.data['token'],
           refresh: response.data['refresh_token'],
         );
+        
         await HiveDatabase.saveProfile(profile: jsonEncode(response.data));
         return true;
       }

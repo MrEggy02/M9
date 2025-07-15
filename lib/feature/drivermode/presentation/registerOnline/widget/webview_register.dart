@@ -1,5 +1,16 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:m9/core/data/hive/hive_database.dart';
+import 'package:m9/core/data/network/api_path.dart';
+import 'package:m9/feature/drivermode/cubit/driver_cubit.dart';
+import 'package:m9/feature/drivermode/cubit/driver_state.dart';
+import 'package:m9/feature/usermode/presentation/home/cubit/home_cubit.dart';
+import 'package:m9/feature/usermode/presentation/home/cubit/home_state.dart';
 import 'package:webview_flutter/webview_flutter.dart';
+import 'package:webview_flutter_wkwebview/webview_flutter_wkwebview.dart';
+import 'package:logger/logger.dart';
 
 class LoadingWebView extends StatefulWidget {
   const LoadingWebView({super.key});
@@ -9,46 +20,55 @@ class LoadingWebView extends StatefulWidget {
 }
 
 class _LoadingWebViewState extends State<LoadingWebView> {
-  late final WebViewController controller;
-  @override
-  void initState() {
-    
-    loadWebView();
-    super.initState();
-  }
-
-  loadWebView() {
-    controller =
-        WebViewController()
-          ..setJavaScriptMode(JavaScriptMode.unrestricted)
-          ..setNavigationDelegate(
-            NavigationDelegate(
-              onProgress: (int progress) {
-                // Update loading bar.
-              },
-              onPageStarted: (String url) {},
-              onPageFinished: (String url) {},
-              onHttpError: (HttpResponseError error) {},
-              onWebResourceError: (WebResourceError error) {},
-              onNavigationRequest: (NavigationRequest request) {
-                if (request.url.startsWith('https://www.youtube.com/')) {
-                  return NavigationDecision.prevent;
-                }
-                return NavigationDecision.navigate;
-              },
-            ),
-          )
-          ..loadRequest(Uri.parse('https://m9-fe.netlify.app/driver-mode/driver'));
-  }
-
+  final Logger log = Logger();
+  WebViewController _controller = WebViewController();
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-     
-      body: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 40),
-        child: WebViewWidget(controller: controller),
-      ),
+    return BlocConsumer<DriverCubit, DriverState>(
+      listener: (context, state) {
+        if (state.driverStatus == DriverStatus.failure) {
+          log.d('Failure');
+        }
+      },
+
+      builder: (context, state) {
+        if (state.driverStatus == DriverStatus.loading) {
+          return Scaffold(body: Center(child: CircularProgressIndicator()));
+        }
+        var cubit = context.read<DriverCubit>();
+        return Scaffold(
+          appBar: AppBar(
+            leading: SizedBox(),
+            actions: [
+              GestureDetector(
+                onTap: () {
+                  Navigator.pop(context);
+                  //cubit.controller.loadRequest(Uri.parse("about:blank"));
+                },
+                child: Container(
+                  height: 40,
+                  width: 100,
+                  decoration: BoxDecoration(
+                    color: Colors.red,
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  child: Center(
+                    child: Text("Close", style: TextStyle(color: Colors.white)),
+                  ),
+                ),
+              ),
+            ],
+          ),
+
+          body: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 40),
+            child: WebViewWidget(
+              controller:
+                  state.controller == null ? _controller : state.controller!,
+            ),
+          ),
+        );
+      },
     );
   }
 }

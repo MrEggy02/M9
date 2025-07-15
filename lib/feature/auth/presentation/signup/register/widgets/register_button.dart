@@ -21,7 +21,7 @@ class RegisterButton extends StatelessWidget {
       },
       builder: (context, state) {
         var cubit = context.read<AuthCubit>();
-        var size = MediaQuery.of(context).size;
+      
         return SizedBox(
           width: double.infinity,
           height: 56,
@@ -33,13 +33,19 @@ class RegisterButton extends StatelessWidget {
                   message: "ເບີໂທຫ້າມວ່າງ!",
                   isSuccess: false,
                 );
-              }else{
+              }else if(cubit.isCheck == false){
+                 MessageHelper.showTopSnackBar(
+                  context: context,
+                  message: "ຕ້ອງກົດຍອມຮັບເງື່ອນໄຂກ່ອນ!",
+                  isSuccess: false,
+                );
+              } else{
                 Navigator.pushNamed(context, AppRoutes.Otp);
               }
               
             },
             style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.amber,
+              backgroundColor:  Colors.amber,
               foregroundColor: Colors.black,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(8),

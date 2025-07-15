@@ -14,7 +14,7 @@ import 'package:m9/feature/usermode/presentation/home/presentation/pages/home_pa
 
 import 'package:m9/feature/usermode/presentation/report/presentation/pages/report_page.dart';
 import 'package:m9/feature/usermode/presentation/setting/setting_page.dart';
-import 'package:m9/feature/usermode/presentation/widgets/onboarding/presentation/pages/onboarding/onboarding_page.dart';
+import 'package:m9/feature/auth/presentation/onboarding/presentation/pages/onboarding/onboarding_page.dart';
 
 class AppRoutes {
   // ເສັ້ນທາງສຳລັບແອັບ
@@ -51,5 +51,6 @@ class AppRoutes {
     selectmap: (context) => const SelectMap(),
     polylinefinderdriver: (context) => const PolylineFinderDriver(),
     register_online: (context)=> const RegisterOnline(),
+    
   };
 }
