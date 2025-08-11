@@ -184,8 +184,13 @@ class _BottomFinderDriverState extends State<BottomFinderDriver> {
                                   style: TextStyle(color: Colors.grey),
                                 ),
                                 Text(
-                                  "Huayhong Road",
-                                  style: TextStyle(fontWeight: FontWeight.bold),
+                                  '${cubit.road} ${cubit.village} ${cubit.city} ${cubit.province} ${cubit.country}',
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 12,
+                                  ),
                                 ),
                               ],
                             ),
@@ -197,6 +202,9 @@ class _BottomFinderDriverState extends State<BottomFinderDriver> {
                           child: GestureDetector(
                             onTap: () {
                               cubit.onTapForm(1);
+                              setState(() {
+                                cubit.getHistory();
+                              });
                               widget.scaffoldKey!.currentState?.showBottomSheet(
                                 (context) {
                                   return PopUpSelectMap();
@@ -260,6 +268,9 @@ class _BottomFinderDriverState extends State<BottomFinderDriver> {
                   child: GestureDetector(
                     onTap: () {
                       cubit.onTapForm(1);
+                      setState(() {
+                        cubit.getHistory();
+                      });
                       //cubit.scaffoldKey = null;
                       widget.scaffoldKey!.currentState?.showBottomSheet((
                         context,

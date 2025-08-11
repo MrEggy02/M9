@@ -4,6 +4,8 @@ import 'package:m9/core/config/theme/app_color.dart';
 import 'package:m9/core/routes/app_routes.dart';
 import 'package:m9/feature/usermode/presentation/finderdriver/cubit/finder_driver_cubit.dart';
 import 'package:m9/feature/usermode/presentation/finderdriver/cubit/finder_driver_state.dart';
+import 'package:m9/feature/usermode/presentation/finderdriver/widget/history_search_map.dart';
+import 'package:m9/feature/usermode/presentation/finderdriver/widget/search_map.dart';
 import 'package:nav_service/nav_service.dart';
 
 class PopUpSelectMap extends StatefulWidget {
@@ -57,8 +59,9 @@ class _PopUpSelectMapState extends State<PopUpSelectMap> {
 
                     IconButton(
                       onPressed: () {
+                         Navigator.pop(context);
                         cubit.onTapForm(0);
-                        Navigator.pop(context);
+                       
                       },
                       icon: Icon(Icons.close),
                     ),
@@ -91,8 +94,10 @@ class _PopUpSelectMapState extends State<PopUpSelectMap> {
                           children: [
                             Text("ຈາກ", style: TextStyle(color: Colors.grey)),
                             Text(
-                              "Huayhong Road",
-                              style: TextStyle(fontWeight: FontWeight.bold),
+                              '${cubit.road} ${cubit.village} ${cubit.city} ${cubit.province} ${cubit.country}',
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: TextStyle(fontWeight: FontWeight.bold,fontSize: 12),
                             ),
                           ],
                         ),
@@ -121,7 +126,24 @@ class _PopUpSelectMapState extends State<PopUpSelectMap> {
                         ),
                         Expanded(
                           flex: 1,
-                          child: TextFormField(
+                          child:
+                           TextFormField(
+                            controller: cubit.search,
+                            onTap: (){
+                              Navigator.push(context, MaterialPageRoute(builder: (context)=> SearchMap()));
+                            },
+                            onChanged: (value) {
+                              setState(() {
+                                cubit.search.text = value;
+                              
+                              });
+                            },
+                            textInputAction: TextInputAction.search,
+                            // onFieldSubmitted: (value) {
+                            //   print('Searching for: $value');
+                            //   cubit.onTapSearch(true);
+                            //   cubit.searchPlace(value);
+                            // },
                             decoration: InputDecoration(
                               contentPadding: EdgeInsets.symmetric(
                                 vertical: 10,
@@ -134,6 +156,23 @@ class _PopUpSelectMapState extends State<PopUpSelectMap> {
                                 ),
                               ),
                               hintText: "ປ້ອນຕຳແຫນ່ງທີ່ຕ້ອງການໄປ",
+
+                              suffixIcon:
+                                  cubit.search.text.isEmpty
+                                      ? null
+                                      : IconButton(
+                                        onPressed: () {
+                                          setState(() {
+                                            cubit.onTapSearch(false);
+                                          
+                                            cubit.search.clear();
+                                          });
+                                        },
+                                        icon: Icon(
+                                          Icons.close_outlined,
+                                          color: Colors.grey,
+                                        ),
+                                      ),
                               hintStyle: TextStyle(
                                 color: Colors.grey,
                                 fontSize: 12,
@@ -141,6 +180,7 @@ class _PopUpSelectMapState extends State<PopUpSelectMap> {
                               border: InputBorder.none,
                             ),
                           ),
+                       
                         ),
                       ],
                     ),
@@ -181,56 +221,7 @@ class _PopUpSelectMapState extends State<PopUpSelectMap> {
                   width: size.width,
                   decoration: BoxDecoration(color: Colors.grey.shade100),
                 ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 10,
-                    vertical: 10,
-                  ),
-                  child: Row(
-                    children: [
-                      Text(
-                        "Recent search",
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      Spacer(),
-                      TextButton(
-                        onPressed: () {},
-                        child: Text(
-                          "Clear",
-                          style: TextStyle(color: Colors.blue),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                ListView.builder(
-                  shrinkWrap: true,
-                  primary: false,
-                  itemCount: 2,
-
-                  itemBuilder: (context, index) {
-                    return ListTile(
-                      leading: Icon(Icons.location_on_outlined),
-                      title: SizedBox(
-                        width: size.width / 2,
-                        child: Text(
-                          "Thongsangnang chanthabury vientaine",
-                          overflow: TextOverflow.ellipsis,
-                          maxLines: 1,
-                          style: TextStyle(fontSize: 12),
-                        ),
-                      ),
-                      trailing: IconButton(
-                        onPressed: () {},
-                        icon: Icon(Icons.close),
-                      ),
-                    );
-                  },
-                ),
-             
+                state.isSearch == true ? SearchMap() : HistorySearchMap(),
               ],
             ),
           ),

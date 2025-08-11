@@ -57,15 +57,15 @@ class _PolylineFinderDriverState extends State<PolylineFinderDriver> {
               MapWidget(
                 key: ValueKey("mapWidget"),
                 onMapCreated: (MapboxMap map) {
-                  // cubit.mapboxMap = map;
+                  cubit.mapboxMap = map;
               
-                  // // Enable location tracking
-                  // cubit.mapboxMap!.location.updateSettings(
-                  //   LocationComponentSettings(
-                  //     enabled: true,
-                  //     pulsingEnabled: true,
-                  //   ),
-                  // );
+                  // Enable location tracking
+                  cubit.mapboxMap!.location.updateSettings(
+                    LocationComponentSettings(
+                      enabled: true,
+                      pulsingEnabled: true,
+                    ),
+                  );
                 },
               
                 onMapIdleListener: (mapIdleEventData) {},

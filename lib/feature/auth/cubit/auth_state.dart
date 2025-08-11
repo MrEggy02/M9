@@ -4,26 +4,29 @@ import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:m9/feature/auth/domain/models/user_model.dart';
 
-enum AuthStatus { initial, loading, success, failure }
+enum AuthStatus { initial, loading, googleLoading, success, failure }
 
 class AuthState extends Equatable {
   final String? error;
 
   final AuthStatus? authStatus;
   final UserModel? userModel;
-  const AuthState({this.error, this.authStatus, this.userModel});
+  final bool? isCheck;
+  const AuthState({this.error, this.authStatus, this.userModel, this.isCheck});
   AuthState copyWith({
     AuthStatus? authStatus,
     String? error,
     UserModel? userModel,
+    bool? isCheck,
   }) {
     return AuthState(
       authStatus: authStatus ?? this.authStatus,
       userModel: userModel ?? this.userModel,
       error: error ?? this.error,
+      isCheck: isCheck ?? this.isCheck,
     );
   }
 
   @override
-  List<Object?> get props => [error, authStatus, userModel];
+  List<Object?> get props => [error, authStatus, isCheck, userModel];
 }

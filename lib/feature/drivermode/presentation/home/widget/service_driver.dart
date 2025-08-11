@@ -1,6 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:m9/feature/drivermode/cubit/driver_cubit.dart';
+import 'package:m9/feature/drivermode/presentation/meter/cubit/meter_cubit.dart';
+import 'package:m9/feature/drivermode/presentation/meter/page/meter_page.dart';
+import 'package:m9/feature/drivermode/presentation/payment/page/payment_page.dart';
+import 'package:m9/feature/drivermode/presentation/registerOnline/widget/webview_register.dart';
 import 'package:m9/feature/drivermode/presentation/tracking/page/tracking_driver.dart';
 import 'package:m9/feature/usermode/presentation/home/cubit/home_cubit.dart';
 import 'package:m9/feature/usermode/presentation/home/cubit/home_state.dart';
@@ -20,7 +25,7 @@ class _ServiceDriverState extends State<ServiceDriver> {
     {"icon": "assets/images/drivermode/mitter.png", "title": "ມິດເຕີ"},
     {"icon": "assets/images/drivermode/history.png", "title": "ປະຫວັດແລ່ນລົດ"},
   ];
- 
+
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<HomeCubit, HomeState>(
@@ -44,11 +49,42 @@ class _ServiceDriverState extends State<ServiceDriver> {
             final data = serviceData;
             return GestureDetector(
               onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => TrackingDriver()),
-                );
-               
+                if (index == 0) {
+                } else if (index == 1) {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (_) => PaymentPage()),
+                  );
+                } else if (index == 2) {
+                } else if (index == 3) {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder:
+                          (_) => BlocProvider(
+                            create:
+                                (BuildContext context) =>
+                                    MeterCubit(context: context),
+                            child: const MeterPage(),
+                          ),
+                    ),
+                  );
+                } else if (index == 4) {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder:
+                          (_) => BlocProvider(
+                            create:
+                                (BuildContext context) =>
+                                    DriverCubit(context: context)..loadWebView(
+                                      url: 'https://m9.skvgroup.online/order',
+                                    ),
+                            child: const LoadingWebView(),
+                          ),
+                    ),
+                  );
+                }
               },
               child: Card(
                 elevation: 5,
@@ -56,17 +92,14 @@ class _ServiceDriverState extends State<ServiceDriver> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Image.asset(data[index]['icon'], height: 50),
-                    Text(
-                      data[index]['title'],
-                      style: TextStyle(fontSize: 15),
-                    ),
+                    Text(data[index]['title'], style: TextStyle(fontSize: 15)),
                   ],
                 ),
               ),
             );
           },
         );
-      }
+      },
     );
   }
 }

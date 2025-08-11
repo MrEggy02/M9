@@ -49,9 +49,18 @@ dependencies:
   firebase_messaging: ^15.2.7
   socket_io_client: ^3.1.2
   url_launcher: ^6.3.1
-  google_sign_in: ^6.3.0
+  google_sign_in: ^7.1.1
   firebase_auth: ^5.6.2
   firebase_core: ^3.14.0
+  mqtt_client: ^10.10.0
+  google_places_flutter: ^2.1.0
+  google_places_api_flutter: ^2.0.0
+  stop_watch_timer: ^3.1.1
+  flutter_foreground_task: ^9.1.0
+  slide_to_act: ^2.0.2
+  geocoding: ^4.0.0
+  firebase_app_check: ^0.3.2+10
+  image_picker: ^1.1.2
 
   
 

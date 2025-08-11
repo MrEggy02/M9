@@ -6,9 +6,14 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:m9/feature/auth/cubit/auth_cubit.dart';
 import 'package:m9/feature/auth/cubit/auth_state.dart';
 
-class PhoneInputField extends StatelessWidget {
+class PhoneInputField extends StatefulWidget {
   const PhoneInputField({super.key});
 
+  @override
+  State<PhoneInputField> createState() => _PhoneInputFieldState();
+}
+
+class _PhoneInputFieldState extends State<PhoneInputField> {
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<AuthCubit, AuthState>(
@@ -19,7 +24,7 @@ class PhoneInputField extends StatelessWidget {
       },
       builder: (context, state) {
         var cubit = context.read<AuthCubit>();
-      
+
         return Container(
           decoration: BoxDecoration(
             border: Border.all(color: Colors.grey.shade300),
@@ -44,10 +49,31 @@ class PhoneInputField extends StatelessWidget {
               Expanded(
                 child: TextFormField(
                   controller: cubit.phoneNumber,
+
+                  onFieldSubmitted: (value) {
+                    if (cubit.phoneNumber.text.isEmpty) {
+                    } else {
+                      cubit.AvailablePhoneNumber(phoneNumber: value);
+                    }
+                  },
                   decoration: InputDecoration(
                     hintText: 'ປ້ອນເບີໂທລະສັບ',
                     border: InputBorder.none,
-                    contentPadding: EdgeInsets.symmetric(horizontal: 10),
+                    contentPadding: EdgeInsets.symmetric(
+                      horizontal: 10,
+                      vertical: 10,
+                    ),
+                    suffixIcon: TextButton(
+                      onPressed: () {
+                        cubit.AvailablePhoneNumber(
+                          phoneNumber: cubit.phoneNumber.text,
+                        );
+                      },
+                      child: Text(
+                        'ຢືນຢັນ',
+                        style: TextStyle(color: Colors.black),
+                      ),
+                    ),
                   ),
                   keyboardType: TextInputType.phone,
                 ),
@@ -55,7 +81,7 @@ class PhoneInputField extends StatelessWidget {
             ],
           ),
         );
-      }
+      },
     );
   }
 }

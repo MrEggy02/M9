@@ -1,7 +1,6 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:equatable/equatable.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:m9/feature/usermode/presentation/finderdriver/domain/models/USER_SURVEY_DRIVER.dart';
 
 enum OrderStatus { initial, loading, success, failure }
@@ -10,6 +9,10 @@ class OrderState extends Equatable {
   final String? error;
   final bool? isCheck;
   final OrderStatus? orderStatus;
+  final dynamic useChooseCar;
+
+  final List<dynamic>? driverList;
+  final UserSurveyDriverModel? userSurveyDrivers;
   final List<UserSurveyDriverModel>? userSurveyDriverModel;
   final bool? isForms;
   final bool? isStart;
@@ -21,6 +24,9 @@ class OrderState extends Equatable {
     this.isForms,
     this.isStart,
     this.loading,
+    this.useChooseCar,
+    this.userSurveyDrivers,
+    this.driverList = const [],
     this.userSurveyDriverModel = const [],
   });
   OrderState copyWith({
@@ -33,6 +39,9 @@ class OrderState extends Equatable {
     int? indexActive,
     Position? position,
     bool? loading,
+    dynamic useChooseCar,
+    final List<dynamic>? driverList,
+    UserSurveyDriverModel? userSurveyDrivers,
     List<UserSurveyDriverModel>? userSurveyDriverModel,
   }) {
     return OrderState(
@@ -42,8 +51,11 @@ class OrderState extends Equatable {
       isStart: isStart ?? this.isStart,
       loading: loading ?? this.loading,
       orderStatus: orderStatus ?? this.orderStatus,
+      useChooseCar: useChooseCar ?? this.useChooseCar,
+      driverList: driverList ?? this.driverList,
       userSurveyDriverModel:
           userSurveyDriverModel ?? this.userSurveyDriverModel,
+      userSurveyDrivers: userSurveyDrivers ?? this.userSurveyDrivers,
     );
   }
 
@@ -55,6 +67,9 @@ class OrderState extends Equatable {
     isForms,
     isStart,
     loading,
+    useChooseCar,
+    driverList,
     userSurveyDriverModel,
+    userSurveyDrivers,
   ];
 }

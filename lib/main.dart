@@ -1,4 +1,7 @@
 // main.dart
+import 'dart:io';
+
+import 'package:firebase_app_check/firebase_app_check.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -29,23 +32,37 @@ Future<void> main() async {
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
   await dotenv.load(fileName: "assets/.env");
   MapboxOptions.setAccessToken(dotenv.env['ACCESS_TOKEN'].toString());
+
   // await GoogleSignIn.instance.initialize(
   //   clientId: await dotenv.env['clientId'],
   //   serverClientId: await dotenv.env['serverClientId'],
   // );
+  
   await HiveDatabase.hiveDatabase();
   await Hive.initFlutter();
   await Hive.openBox('settings');
+  await Hive.openBox('searchMap');
+  try {
+  
   await Firebase.initializeApp(
-    options: FirebaseOptions(
-      apiKey: 'AIzaSyAgn_fRZwv0tjLG1zyi_s3yCiaTDVzFRcw',
-      appId: '1:587488109812:ios:d9fca09c85f62b43f96aa1',
-      messagingSenderId: '587488109812',
-      projectId: 'm9-driver-lao',
-    ),
+    // options: FirebaseOptions(
+    //   apiKey: 'AIzaSyAgn_fRZwv0tjLG1zyi_s3yCiaTDVzFRcw',
+    //   appId: '1:587488109812:ios:d9fca09c85f62b43f96aa1',
+    //   messagingSenderId: '587488109812',
+    //   projectId: 'm9-driver-lao',
+    // ),
+  );
+}  catch (e) {
+  // TODO
+  print("=====>$e");
+}
+  await FirebaseAppCheck.instance.activate(
+    androidProvider: AndroidProvider.debug, // ສໍາລັບ debug
+    // androidProvider: AndroidProvider.playIntegrity, // ສໍາລັບ production
+    appleProvider: AppleProvider.appAttest, // ສໍາລັບ iOS
   );
 
-  // ລົງທະບຽນ dependencies
+  // ລົງທະບຽນ dependencies Apps That have requested permission to find and communicate with device on your local network will appear her
   setupDependencies();
 
   runApp(

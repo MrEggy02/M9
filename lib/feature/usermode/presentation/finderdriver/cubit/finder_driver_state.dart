@@ -9,10 +9,12 @@ enum FinderDriverStatus { initial, loading, success, failure }
 class FinderDriverState extends Equatable {
   final String? error;
   final bool? isCheck;
+  final bool? isSearch;
   final FinderDriverStatus? finderDriverStatus;
   final PolylineModel? polylineDataModel;
   final LatLng? currentCenter;
   final dynamic polyline;
+  final List<dynamic>? historySearch;
   final List<LatLng>? polylinePoints;
   final Set<Polyline>? polylines;
   final Set<Circle>? circles;
@@ -27,13 +29,15 @@ class FinderDriverState extends Equatable {
   final bool? loading;
   const FinderDriverState({
     this.error,
-    this. currentCenter,
+    this.currentCenter,
     this.finderDriverStatus,
     this.currenIndex,
     this.polyline,
     this.indexActive,
+    this.historySearch = const [],
     this.mapType,
     this.markerIcon,
+    this.isSearch = false,
     this.isCheck = false,
     this.isForms,
     this.isStart,
@@ -49,6 +53,7 @@ class FinderDriverState extends Equatable {
     FinderDriverStatus? finderDriverStatus,
     String? formTime,
     bool isClearPolyline = false,
+    bool? isSearch,
     BitmapDescriptor? markerIcon,
     List<LatLng>? polylinePoints,
     Set<Polyline>? polylines,
@@ -65,6 +70,7 @@ class FinderDriverState extends Equatable {
     bool? isStart,
     int? start,
     LatLng? currentCenter,
+    List<dynamic>? historySearch,
     int? index,
     bool? loading,
   }) {
@@ -81,11 +87,13 @@ class FinderDriverState extends Equatable {
       index: index ?? this.index,
       isForms: isForms ?? this.isForms,
       isStart: isStart ?? this.isStart,
+      isSearch: isSearch ?? this.isSearch,
       start: start ?? this.start,
       loading: loading ?? this.loading,
       markerIcon: markerIcon ?? this.markerIcon,
       polylinePoints: polylinePoints ?? this.polylinePoints,
       polylines: isClearPolyline ? null : polylines ?? this.polylines,
+      historySearch: historySearch ?? historySearch,
       circles: circles ?? this.circles,
     );
   }
@@ -100,6 +108,7 @@ class FinderDriverState extends Equatable {
     polyline,
     isForms,
     isStart,
+    isSearch,
     polylineDataModel,
     start,
     markerIcon,
@@ -109,5 +118,6 @@ class FinderDriverState extends Equatable {
     indexActive,
     index,
     loading,
+    historySearch,
   ];
 }

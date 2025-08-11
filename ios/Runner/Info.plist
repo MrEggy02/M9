@@ -2,83 +2,103 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-	<key>CFBundleDevelopmentRegion</key>
-	<string>$(DEVELOPMENT_LANGUAGE)</string>
-	<key>CFBundleDisplayName</key>
-	<string>M9</string>
-	<key>CFBundleExecutable</key>
-	<string>$(EXECUTABLE_NAME)</string>
-	<key>CFBundleIdentifier</key>
-	<string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
-	<key>CFBundleInfoDictionaryVersion</key>
-	<string>6.0</string>
-	<key>CFBundleName</key>
-	<string>m9</string>
-	<key>CFBundlePackageType</key>
-	<string>APPL</string>
-	<key>CFBundleShortVersionString</key>
-	<string>$(FLUTTER_BUILD_NAME)</string>
-	<key>CFBundleSignature</key>
-	<string>????</string>
-	<key>CFBundleVersion</key>
-	<string>$(FLUTTER_BUILD_NUMBER)</string>
-	<key>LSRequiresIPhoneOS</key>
-	<true/>
-	<key>UILaunchStoryboardName</key>
-	<string>LaunchScreen</string>
-	<key>UIMainStoryboardFile</key>
-	<string>Main</string>
-	<key>UISupportedInterfaceOrientations</key>
-	<array>
-		<string>UIInterfaceOrientationPortrait</string>
-		<string>UIInterfaceOrientationLandscapeLeft</string>
-		<string>UIInterfaceOrientationLandscapeRight</string>
-	</array>
-	<key>UISupportedInterfaceOrientations~ipad</key>
-	<array>
-		<string>UIInterfaceOrientationPortrait</string>
-		<string>UIInterfaceOrientationPortraitUpsideDown</string>
-		<string>UIInterfaceOrientationLandscapeLeft</string>
-		<string>UIInterfaceOrientationLandscapeRight</string>
-	</array>
-	<key>CADisableMinimumFrameDurationOnPhone</key>
-	<true/>
-	<key>UIApplicationSupportsIndirectInputEvents</key>
-	<true/>
+  <key>CFBundleDevelopmentRegion</key>
+  <string>$(DEVELOPMENT_LANGUAGE)</string>
 
-	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>Location required to permission</string>
+  <key>CFBundleDisplayName</key>
+  <string>M9</string>
 
-	<!-- ✅ Only allow HTTPS connections -->
-	<key>NSAppTransportSecurity</key>
-	<dict>
-		<key>NSAllowsArbitraryLoads</key>
-		<false/>
-	</dict>
+  <key>CFBundleExecutable</key>
+  <string>$(EXECUTABLE_NAME)</string>
 
-	<!-- ✅ Local Network Debugging -->
-	<key>NSLocalNetworkUsageDescription</key>
-	<string>We use your local network for debugging purposes.</string>
-	<key>NSBonjourServices</key>
-	<array>
-		<string>_dartobservatory._tcp</string>
-	</array>
+  <key>CFBundleIdentifier</key>
+  <string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
 
-	<!-- ✅ Flutter WebView support -->
-	<key>io.flutter.embedded_views_preview</key>
-	<true/>
-	<!-- ✅ Google Sigin -->
-	<!-- <string>587488109812-4qae75b30kncv0e0nu319mh3co01vh8t.apps.googleusercontent.com</string> -->
-	<key>CFBundleURLTypes</key>
-	<array>
-  	<dict>
-    <key>CFBundleURLSchemes</key>
-    <array>
-      <string>com.googleusercontent.apps.587488109812-4qae75b30kncv0e0nu319mh3co01vh8t</string>
-    </array>
-	<!-- ✅ Google Sigin -->
+  <key>CFBundleInfoDictionaryVersion</key>
+  <string>6.0</string>
+
+  <key>CFBundleName</key>
+  <string>m9</string>
+
+  <key>CFBundlePackageType</key>
+  <string>APPL</string>
+
+  <key>CFBundleShortVersionString</key>
+  <string>$(FLUTTER_BUILD_NAME)</string>
+
+  <key>CFBundleSignature</key>
+  <string>????</string>
+
+  <key>CFBundleVersion</key>
+  <string>$(FLUTTER_BUILD_NUMBER)</string>
+
+  <key>LSRequiresIPhoneOS</key>
+  <true/>
+
+  <key>UILaunchStoryboardName</key>
+  <string>LaunchScreen</string>
+
+  <key>UIMainStoryboardFile</key>
+  <string>Main</string>
+
+  <key>UISupportedInterfaceOrientations</key>
+  <array>
+    <string>UIInterfaceOrientationPortrait</string>
+    <string>UIInterfaceOrientationLandscapeLeft</string>
+    <string>UIInterfaceOrientationLandscapeRight</string>
+  </array>
+
+  <key>UISupportedInterfaceOrientations~ipad</key>
+  <array>
+    <string>UIInterfaceOrientationPortrait</string>
+    <string>UIInterfaceOrientationPortraitUpsideDown</string>
+    <string>UIInterfaceOrientationLandscapeLeft</string>
+    <string>UIInterfaceOrientationLandscapeRight</string>
+  </array>
+
+  <key>CADisableMinimumFrameDurationOnPhone</key>
+  <true/>
+
+  <key>UIApplicationSupportsIndirectInputEvents</key>
+  <true/>
+
+  <!-- ✅ Location permissions -->
+  <key>NSLocationWhenInUseUsageDescription</key>
+  <string>This app needs access to your location.</string>
+
+  <key>NSLocationAlwaysUsageDescription</key>
+  <string>This app needs access to your location always.</string>
+
+  <!-- ✅ App Transport Security -->
+  <key>NSAppTransportSecurity</key>
+  <dict>
+    <key>NSAllowsArbitraryLoads</key>
+    <false/>
   </dict>
+
+  <!-- ✅ Local Network permissions -->
+  <key>NSLocalNetworkUsageDescription</key>
+<string>Apps That have requested permission to find and communicate with device on your local network will appear here</string>
+<key>NSBonjourServices</key>
+<array>
+        <string>_dartVmService._tcp</string>
+        <string>_dartobservatory._tcp</string>
 </array>
 
+  <!-- ✅ Flutter WebView support -->
+  <key>io.flutter.embedded_views_preview</key>
+  <true/>
+
+  <!-- ✅ Google Sign-In support -->
+  <key>CFBundleURLTypes</key>
+  <array>
+    <dict>
+      <key>CFBundleURLSchemes</key>
+      <array>
+        <string>com.googleusercontent.apps.587488109812-4qae75b30kncv0e0nu319mh3co01vh8t</string>
+        <string>mqtt.tcp</string> <!-- if needed -->
+      </array>
+    </dict>
+  </array>
 </dict>
 </plist>

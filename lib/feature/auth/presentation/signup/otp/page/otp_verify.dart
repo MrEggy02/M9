@@ -1,4 +1,6 @@
 // lib/presentation/pages/otp_verification_page.dart
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:m9/core/config/theme/app_color.dart';
@@ -42,6 +44,50 @@ class _OtpVerificationPageState extends State<OtpVerificationPage> {
   }
 
   final pinController = TextEditingController();
+
+  Timer? _timer;
+  int _secondsLeft = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    _startOtpTimer(60);
+  }
+
+  @override
+  void dispose() {
+    _timer?.cancel();
+    super.dispose();
+  }
+
+  void _startOtpTimer(int seconds) {
+    _timer?.cancel();
+    setState(() {
+      _secondsLeft = seconds;
+    });
+
+    _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      if (_secondsLeft <= 1) {
+        timer.cancel();
+        setState(() => _secondsLeft = 0);
+        // TODO: optional callback when timer finished
+      } else {
+        setState(() => _secondsLeft -= 1);
+      }
+    });
+  }
+
+  void _resetTimer() {
+    _timer?.cancel();
+    setState(() => _secondsLeft = 0);
+  }
+
+  String _formatTime(int totalSeconds) {
+    final minutes = (totalSeconds ~/ 60).toString().padLeft(2, '0');
+    final seconds = (totalSeconds % 60).toString().padLeft(2, '0');
+    return '$minutes:$seconds';
+  }
+
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<AuthCubit, AuthState>(
@@ -52,7 +98,8 @@ class _OtpVerificationPageState extends State<OtpVerificationPage> {
       },
       builder: (context, state) {
         var cubit = context.read<AuthCubit>();
-        var size = MediaQuery.of(context).size;
+      
+        final isRunning = _secondsLeft > 0;
         return Scaffold(
           appBar: AppBar(
             title: const Text('ກັບຄືນ', style: TextStyle(fontSize: 18)),
@@ -91,7 +138,9 @@ class _OtpVerificationPageState extends State<OtpVerificationPage> {
                         ),
                         const SizedBox(height: 30),
 
-                        OtpPin(),
+                        state.authStatus == AuthStatus.loading
+                            ? Center(child: CircularProgressIndicator())
+                            : OtpPin(),
                         // ຊ່ອງປ້ອນລະຫັດ OTP
                         const SizedBox(height: 30),
                         // ປຸ່ມສົ່ງລະຫັດໃໝ່
@@ -102,12 +151,15 @@ class _OtpVerificationPageState extends State<OtpVerificationPage> {
                               'ຍັງບໍ່ໄດ້ຮັບລະຫັດ? ',
                               style: TextStyle(fontSize: 16),
                             ),
+
                             InkWell(
                               onTap: () {
-                                Navigator.pop(context);
+                                isRunning ? '' : Navigator.pop(context);
                               },
-                              child: const Text(
-                                'ສົ່ງໃໝ່ອີກຄັ້ງ',
+                              child: Text(
+                                isRunning
+                                    ? 'ເວລາເຫຼືອ ${_formatTime(_secondsLeft)}'
+                                    : 'ສົ່ງໃໝ່ອີກຄັ້ງ',
                                 style: TextStyle(
                                   fontSize: 16,
                                   color: Colors.amber,
@@ -117,6 +169,7 @@ class _OtpVerificationPageState extends State<OtpVerificationPage> {
                             ),
                           ],
                         ),
+                        
                       ],
                     ),
                   ),
@@ -124,7 +177,8 @@ class _OtpVerificationPageState extends State<OtpVerificationPage> {
               ),
 
               // ຄີບອດສຳລັບປ້ອນຕົວເລກ
-             OtpKeyboard(),
+              OtpKeyboard(),
+              SizedBox(height: 10),
             ],
           ),
         );

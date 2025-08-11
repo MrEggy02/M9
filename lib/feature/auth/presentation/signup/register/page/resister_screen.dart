@@ -117,9 +117,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
           child: Checkbox(
             value: cubit.isCheck,
             onChanged: (value) {
-              setState(() {
-                cubit.isCheck = value!;
-              });
+             cubit.onCheck(value);
             },
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(4),

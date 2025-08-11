@@ -35,4 +35,6 @@ class AppConstants {
   static const String CHAT_MESSAGE = "chat-message";
   static const String ORDER = "order";
   static const String ORDER_COMPLETE = "order-complete";
+  static const String USER = "USER";
+
 }

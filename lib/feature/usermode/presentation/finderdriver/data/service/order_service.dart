@@ -16,11 +16,12 @@ class OrderService {
 
       final ApiResponse response = await _networkCall.request(
         paths: ApiPaths.getUserSurveyDriver + 'lat=18.0309633&lon=102.6518033&radius=1000',
-        method: ApiPaths.getRequest,
+        method: ApiPaths.postRequest,
         headers: headers,
       );
-      print("===>${response.data}");
+    
       if (response.status == true) {
+          print("===> Success${response.data}");
         return true;
       }
       return false;

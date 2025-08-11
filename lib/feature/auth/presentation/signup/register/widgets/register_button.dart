@@ -21,40 +21,46 @@ class RegisterButton extends StatelessWidget {
       },
       builder: (context, state) {
         var cubit = context.read<AuthCubit>();
-      
+
         return SizedBox(
           width: double.infinity,
           height: 56,
           child: ElevatedButton(
             onPressed: () {
-              if (cubit.phoneNumber.text.isEmpty) {
+              if (cubit.isCheck == false) {
+              } else if (cubit.phoneNumber.text.isEmpty) {
                 MessageHelper.showTopSnackBar(
                   context: context,
                   message: "ເບີໂທຫ້າມວ່າງ!",
                   isSuccess: false,
                 );
-              }else if(cubit.isCheck == false){
-                 MessageHelper.showTopSnackBar(
-                  context: context,
-                  message: "ຕ້ອງກົດຍອມຮັບເງື່ອນໄຂກ່ອນ!",
-                  isSuccess: false,
-                );
-              } else{
+              } else {
+                cubit.sendOTP(phoneNumber: cubit.phoneNumber.text);
                 Navigator.pushNamed(context, AppRoutes.Otp);
               }
-              
             },
             style: ElevatedButton.styleFrom(
-              backgroundColor:  Colors.amber,
+              backgroundColor:
+                  cubit.isPhone == false
+                      ? Colors.grey.shade300
+                      : cubit.isCheck == false
+                      ? Colors.grey.shade300
+                      : Colors.amber,
               foregroundColor: Colors.black,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(8),
               ),
             ),
-            child: const Text(
-              'ລົງທະບຽນ',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-            ),
+            child:
+                state.authStatus == AuthStatus.loading
+                    ? CircularProgressIndicator(color: Colors.black)
+                    : const Text(
+                      'ລົງທະບຽນ',
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
           ),
         );
       },

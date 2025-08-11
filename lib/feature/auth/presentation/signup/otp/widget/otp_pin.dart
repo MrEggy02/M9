@@ -28,7 +28,7 @@ class _OtpPinState extends State<OtpPin> {
           length: 6,
           autofocus: true,
           readOnly: true,
-          keyboardType: TextInputType.none,
+          keyboardType: TextInputType.phone,
           defaultPinTheme: PinTheme(
             width: 56,
             height: 60,
@@ -74,6 +74,11 @@ class _OtpPinState extends State<OtpPin> {
           ),
           onCompleted: (pin) {
             print('Entered pin: $pin');
+            cubit.verifyOTP().then((value) {
+              // if (value == 1) {
+              //   cubit.sumitOTP();
+              // }
+            });
           },
         );
       },

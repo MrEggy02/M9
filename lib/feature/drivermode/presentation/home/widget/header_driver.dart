@@ -83,7 +83,8 @@ class HeaderDriver extends StatelessWidget {
           top: 140,
           left: 15,
           right: 15,
-          child: Container(
+          child: 
+          Container(
             height: size.height / 4.6,
             width: double.infinity,
             decoration: BoxDecoration(
@@ -167,6 +168,7 @@ class HeaderDriver extends StatelessWidget {
               ),
             ),
           ),
+       
         ),
       ],
     );

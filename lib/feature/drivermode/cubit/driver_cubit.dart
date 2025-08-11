@@ -2,13 +2,17 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:m9/core/constants/app_constants.dart';
 import 'package:m9/core/data/hive/hive_database.dart';
+import 'package:m9/core/data/network/api_path.dart';
 import 'package:m9/core/data/response/messageHelper.dart';
 import 'package:m9/feature/drivermode/cubit/driver_state.dart';
 import 'package:m9/feature/usermode/presentation/home/cubit/home_state.dart';
 import 'package:m9/feature/usermode/presentation/home/data/repositories/home_repositories.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:webview_flutter/webview_flutter.dart';
+import 'package:mqtt_client/mqtt_client.dart';
+import 'package:mqtt_client/mqtt_server_client.dart';
 
 class DriverCubit extends Cubit<DriverState> {
   final BuildContext context;
@@ -26,18 +30,12 @@ class DriverCubit extends Cubit<DriverState> {
     return super.close();
   }
 
-  void launchURL() async {
-    final url = Uri.parse('https://btptawa.com');
-    if (await canLaunchUrl(url)) {
-      await launchUrl(url, mode: LaunchMode.inAppBrowserView);
-    } else {
-      throw 'Could not launch $url';
-    }
-  }
+  bool _hasSetCookie = false;
 
-  Future<void> loadWebView() async {
+  Future<void> loadWebView({required String url}) async {
     try {
-      //final token = await HiveDatabase.getToken();
+       final token = await HiveDatabase.getToken();
+      // print("====>${token['token']}");
       // await controller.clearCache(); // Optional
       // await controller.loadRequest(Uri.parse('about:blank'));
       emit(state.copyWith(driverStatus: DriverStatus.loading));
@@ -45,16 +43,37 @@ class DriverCubit extends Cubit<DriverState> {
       controller =
           WebViewController()
             ..setJavaScriptMode(JavaScriptMode.unrestricted)
-            ..setBackgroundColor(Colors.transparent)
             ..setNavigationDelegate(
               NavigationDelegate(
-                onProgress: (progress) => print("Progress: $progress"),
-                onPageStarted: (url) => print("Started: $url"),
-                onPageFinished: (url) => print("Finished: $url"),
-                onWebResourceError: (error) => print("Error: ${error.toString()}"),
+                onProgress: (int progress) {
+                  // Update loading bar.
+                },
+                onPageStarted: (String url) {},
+                onPageFinished: (String url) async {
+                  if (!_hasSetCookie) {
+                    _hasSetCookie = true;
+
+             
+                    await controller.runJavaScript("""
+                    document.cookie = 'token=${await token['token']}; path=/';
+                    location.reload();
+                     """);
+                  }
+                },
+                onHttpError: (HttpResponseError error) {},
+                onWebResourceError: (WebResourceError error) {},
+                onNavigationRequest: (NavigationRequest request) {
+                  if (request.url.startsWith('https://www.youtube.com/')) {
+                    return NavigationDecision.prevent;
+                  }
+                  return NavigationDecision.navigate;
+                },
               ),
             )
-            ..loadRequest(Uri.parse('https://m9.homefind.la/register-driver?sessionID=7bdf2ce1811090e459da78bade25e3a84a98f7f6366cb29002d0ceaee87dae84&path=register-driver'));
+            ..loadRequest(
+              Uri.parse(url),
+            );
+
       //await controller.loadRequest(Uri.parse('about:blank'));
       //await controller.reload();
       //await Future.delayed(Duration(milliseconds: 300));

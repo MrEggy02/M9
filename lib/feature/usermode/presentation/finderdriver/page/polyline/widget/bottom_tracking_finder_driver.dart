@@ -330,7 +330,7 @@ class _BottomTrackingFinderDriverState
                                     horizontal: 5,
                                   ),
                                   child: Icon(
-                                    LucideIcons.circleHelp,
+                                    LucideIcons.phone,
                                     size: 11,
                                     color: Colors.blue,
                                   ),
@@ -361,7 +361,7 @@ class _BottomTrackingFinderDriverState
                                     horizontal: 5,
                                   ),
                                   child: Icon(
-                                    LucideIcons.circleHelp,
+                                    LucideIcons.circleCheck,
                                     size: 11,
                                     color: Colors.blue,
                                   ),
@@ -402,7 +402,7 @@ class _BottomTrackingFinderDriverState
                                       horizontal: 5,
                                     ),
                                     child: Icon(
-                                      LucideIcons.circleHelp,
+                                      LucideIcons.star,
                                       size: 11,
                                       color: Colors.blue,
                                     ),

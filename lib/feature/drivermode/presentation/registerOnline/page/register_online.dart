@@ -67,17 +67,25 @@ class _RegisterOnlineState extends State<RegisterOnline> {
               top: 70,
               right: 20,
               left: 20,
-              child: Container(
-                height: size.height / 16,
-                width: size.width / 1,
-                decoration: BoxDecoration(
-                  border: Border.all(color: AppColors.primaryColor),
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                child: Center(
-                  child: Text(
-                    "ກັບໄປໂໝດຜູ້ໂດຍສານ",
-                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+              child: GestureDetector(
+                onTap: () {
+                  Navigator.pushReplacementNamed(context, AppRoutes.homepage);
+                },
+                child: Container(
+                  height: size.height / 16,
+                  width: size.width / 1,
+                  decoration: BoxDecoration(
+                    border: Border.all(color: AppColors.primaryColor),
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: Center(
+                    child: Text(
+                      "ກັບໄປໂໝດຜູ້ໂດຍສານ",
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
                   ),
                 ),
               ),
@@ -209,17 +217,16 @@ class _RegisterOnlineState extends State<RegisterOnline> {
                       builder:
                           (_) => BlocProvider(
                             create:
-                                (BuildContext context) =>
-                                    DriverCubit(context: context)
-                                      ..loadWebView(),
+                                (BuildContext context) => DriverCubit(
+                                  context: context,
+                                )..loadWebView(
+                                  url:
+                                      'https://m9.skvgroup.online/register-driver',
+                                ),
                             child: const LoadingWebView(),
                           ),
                     ),
                   );
-                  // Navigator.push(
-                  //   context,
-                  //   MaterialPageRoute(builder: (context) => LoadingWebView()),
-                  // );
                 },
                 child: Container(
                   height: size.height / 13,

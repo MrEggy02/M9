@@ -20,10 +20,60 @@ class HiveDatabase {
     return box;
   }
 
+  static Future<List<Map>> getHistory() async {
+    final searchBox = await Hive.openBox('searchMap');
+    return searchBox.values.cast<Map>().toList().toList();
+  }
+
+  static Future<bool> saveSearchMap({
+    required String formatted_address,
+    required String name,
+  }) async {
+    final searchBox = await Hive.openBox('searchMap');
+    await searchBox.add({
+      "name": name,
+      "formatted_address": formatted_address,
+      "timestamp": DateTime.now().toIso8601String(),
+    });
+    final data = searchBox.values.toList();
+    print("====>${data}");
+    return true;
+  }
+
+  static Future<bool> deleteSearchAll() async {
+    try {
+      final box = await Hive.openBox('searchMap');
+      await box.clear();
+      return true;
+    } catch (e) {
+      print("❌ Error: $e");
+      return false;
+    }
+  }
+
+  static Future<bool> deleteSearchAt({required int index}) async {
+    try {
+      final box = await Hive.openBox('searchMap');
+      final keys = box.keys.toList();
+      if (index >= 0 && index < keys.length) {
+        final keyToDelete = keys[index];
+        await box.delete(keyToDelete);
+        print("✅ Deleted item at real Hive key: $keyToDelete");
+        return true;
+      } else {
+        print("❌ Index $index is out of range.");
+        return false;
+      }
+    } catch (e) {
+      print("❌ Error: $e");
+      return false;
+    }
+  }
+
   static Future<dynamic> getToken() async {
     final userBox = await box!.openBox<Map>('auth');
     final data = await userBox.getAll(['tokens']);
-    // print(data[0]!['token']);
+
     return data[0];
   }
 
@@ -43,8 +93,14 @@ class HiveDatabase {
     final userBox = await box!.openBox<Map>('auth');
     final data = await userBox.get("profile_image");
     final file = jsonDecode(data!['data']);
-    // print(file);
+
     return file;
+  }
+
+  static Future<dynamic> getGoogleToken() async {
+    final userBox = await box!.openBox<Map>('auth');
+    final googleToken = await userBox.getAll(['googleToken']);
+    return googleToken[0]!['data'];
   }
 
   static Future<dynamic> getUserId() async {
@@ -82,6 +138,14 @@ class HiveDatabase {
     return true;
   }
 
+  static Future<bool> deleteGoogleToken() async {
+    final userBox = await Hive.openBox<Map>('auth');
+    await userBox.delete('googleToken');
+    // await userBox.deleteAll(['googleToken']);
+
+    return true;
+  }
+
   static Future<bool> deleteUserId() async {
     final userBox = await box!.openBox<Map>('auth');
     await userBox.deleteAll(['user_id']);
@@ -101,30 +165,29 @@ class HiveDatabase {
     required String phoneNumber,
     required String password,
   }) async {
-    final key = Key.fromLength(32);
-    final iv = IV.fromLength(8);
-    final encrypter = Encrypter(Salsa20(key));
-    final encrypted = encrypter.encrypt(password, iv: iv);
     final authBox = await box!.openBox('auth');
-    await authBox.put('saved_phoneNumber', phoneNumber);
-    await authBox.put('saved_password', encrypted.base64);
+    await authBox.put("remember", {
+      "phoneNumber": "20${phoneNumber}",
+      "password": password,
+    });
     return true;
   }
 
   static Future<dynamic> getLoginRemember() async {
-    final key = Key.fromLength(32);
-    final iv = IV.fromLength(8);
-    final encrypter = Encrypter(Salsa20(key));
-    final authBox = await box!.openBox('auth');
-    final phoneNumber = await authBox.get('saved_phoneNumber');
-    final pass = await authBox.get('saved_password');
-    final password = encrypter.decrypt(pass, iv: iv);
-    return {phoneNumber, password};
+    final userBox = await box!.openBox<Map>('auth');
+    final googleToken = await userBox.getAll(['remember']);
+    return googleToken[0];
   }
 
   static Future<bool> saveProfileImage({required File file}) async {
     final userBox = await box!.openBox<Map>('auth');
     await userBox.put("profile_image", {"data": file.toString()});
+    return true;
+  }
+
+  static Future<bool> saveGoogleToken({required String googleToken}) async {
+    final userBox = await box!.openBox<Map>('auth');
+    await userBox.put("googleToken", {"data": googleToken});
     return true;
   }
 
@@ -146,10 +209,17 @@ class HiveDatabase {
   }) async {
     final userBox = await box!.openBox<Map>('auth');
 
-    await userBox.put("tokens", {
-      "token": token,
-      "refreshToken": refresh,
-    });
+    await userBox.put("tokens", {"token": token, "refreshToken": refresh});
     return true;
+  }
+
+  static Future<void> clearTime() async {
+    final timeBox = await box!.openBox('time');
+    await timeBox.clear();
+  }
+
+  static Future<void> setTime() async {
+    final timeBox = await box!.openBox('time');
+    await timeBox.put('data', DateTime.now());
   }
 }
