@@ -22,6 +22,7 @@ class HeaderUser extends StatefulWidget {
 }
 
 class _HeaderUserState extends State<HeaderUser> {
+  
   @override
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
