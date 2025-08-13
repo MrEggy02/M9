@@ -1,6 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:m9/core/config/theme/app_color.dart' show AppColors;
 import 'package:m9/core/routes/app_routes.dart';
+import 'package:m9/feature/auth/cubit/auth_cubit.dart';
+import 'package:m9/feature/auth/cubit/auth_state.dart';
+import 'package:m9/feature/auth/data/repositories/auth_repositories.dart';
+import 'package:m9/feature/usermode/presentation/setting/page/setting_page.dart';
 
 class DrawerUser extends StatefulWidget {
   const DrawerUser({super.key});
@@ -35,7 +40,8 @@ class _DrawerUserState extends State<DrawerUser> {
                     ),
                     child: ClipRRect(
                       borderRadius: BorderRadius.circular(60),
-                      child: Image.asset("assets/images/usermode/profile.jpg")),
+                      child: Image.asset("assets/images/usermode/profile.jpg"),
+                    ),
                   ),
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 10),
@@ -50,8 +56,13 @@ class _DrawerUserState extends State<DrawerUser> {
                             fontWeight: FontWeight.bold,
                           ),
                         ),
-                        Text("+856 20 96794376",style: TextStyle(fontSize: 16,fontWeight: FontWeight.bold),),
-                        
+                        Text(
+                          "+856 20 96794376",
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
                       ],
                     ),
                   ),
@@ -68,24 +79,27 @@ class _DrawerUserState extends State<DrawerUser> {
                   leading: Icon(Icons.home_outlined),
                   title: const Text('ໜ້າຫຼັກ'),
                   onTap: () {
-                    Navigator.pop(context);
+                    Navigator.pushReplacementNamed(context, AppRoutes.homepage);
                   },
                 ),
                 ListTile(
                   leading: Icon(Icons.local_taxi_outlined),
                   title: const Text('ເອີ້ນລົດ'),
                   onTap: () {
-                     Navigator.pushReplacementNamed(context, AppRoutes.find_driver);
+                    Navigator.pushReplacementNamed(
+                      context,
+                      AppRoutes.find_driver,
+                    );
                   },
                 ),
-                 ListTile(
+                ListTile(
                   leading: Icon(Icons.local_taxi_outlined),
                   title: const Text('ລົດເຊົ່າ-ລົດເໝົາ'),
                   onTap: () {
                     Navigator.pop(context);
                   },
                 ),
-                 ListTile(
+                ListTile(
                   leading: Icon(Icons.local_taxi_outlined),
                   title: const Text('ຈັດສົ່ງສິນຄ້າ'),
                   onTap: () {
@@ -110,7 +124,22 @@ class _DrawerUserState extends State<DrawerUser> {
                   leading: Icon(Icons.settings_outlined),
                   title: const Text('ການຕັ້ງຄ່າ'),
                   onTap: () {
-                    Navigator.pop(context);
+                    // Navigator.pushReplacementNamed(context, AppRoutes.setting);
+                    
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder:
+                            (_) => BlocProvider(
+                              create:
+                                  (BuildContext context) => AuthCubit(
+                                    context: context,
+                                    authRepositories: AuthRepositories(),
+                                  )..getProfile(),
+                              child: const SettingPage(),
+                            ),
+                      ),
+                    );
                   },
                 ),
                 ListTile(
@@ -125,10 +154,13 @@ class _DrawerUserState extends State<DrawerUser> {
           ),
           // Bottom container - will always stay at the bottom
           Padding(
-            padding: const EdgeInsets.symmetric(vertical: 30, horizontal: 10),
+            padding: const EdgeInsets.symmetric(vertical: 60, horizontal: 10),
             child: GestureDetector(
-              onTap: (){
-                Navigator.pushReplacementNamed(context, AppRoutes.register_online);
+              onTap: () {
+                Navigator.pushReplacementNamed(
+                  context,
+                  AppRoutes.register_online,
+                );
               },
               child: Container(
                 height: 50,
@@ -141,7 +173,7 @@ class _DrawerUserState extends State<DrawerUser> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Icon(Icons.mobile_friendly),
-              
+
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 10),
                       child: Text(

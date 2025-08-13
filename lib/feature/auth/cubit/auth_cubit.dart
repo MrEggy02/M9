@@ -1,9 +1,12 @@
 // ignore_for_file: unnecessary_null_comparison
+import 'dart:io';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_sign_in/google_sign_in.dart' show GoogleSignIn;
+import 'package:image_picker/image_picker.dart';
 
 import 'package:m9/core/data/hive/hive_database.dart';
 import 'package:m9/core/data/response/messageHelper.dart';
@@ -27,6 +30,7 @@ class AuthCubit extends Cubit<AuthState> {
   final formKeyLogin = GlobalKey<FormState>();
 
   TextEditingController phoneNumber = TextEditingController();
+  TextEditingController newPhoneNumber = TextEditingController();
   TextEditingController password = TextEditingController();
   TextEditingController newpassword = TextEditingController();
   TextEditingController comfirmpassword = TextEditingController();
@@ -35,8 +39,16 @@ class AuthCubit extends Cubit<AuthState> {
   TextEditingController lastName = TextEditingController();
   TextEditingController email = TextEditingController();
   TextEditingController pinController = TextEditingController();
+  TextEditingController addressController = TextEditingController();
+  TextEditingController dobController = TextEditingController();
+  TextEditingController accountNameController = TextEditingController();
+  TextEditingController bankNameController = TextEditingController();
+  TextEditingController accountNoController = TextEditingController();
+  TextEditingController bankIdController = TextEditingController();
   bool isCheck = false;
   bool isPhone = false;
+  String? selectedGender;
+  final ImagePicker _picker = ImagePicker();
   var dataRemember;
   final FirebaseAuth auth = FirebaseAuth.instance;
   // final GoogleSignIn signIn = GoogleSignIn.instance;
@@ -68,6 +80,7 @@ class AuthCubit extends Cubit<AuthState> {
     email.clear();
     firstName.clear();
     lastName.clear();
+    newPhoneNumber.clear();
   }
 
   Future<void> saveLoginRemember({
@@ -82,6 +95,63 @@ class AuthCubit extends Cubit<AuthState> {
     } catch (e) {
       print(e);
     }
+  }
+
+  Future<void> updateProfile({required File avatar}) async {
+    emit(state.copyWith(authStatus: AuthStatus.loading));
+    final result = await authRepositories.updateProfile(avatar: avatar);
+    result.fold(
+      (error) {
+        emit(state.copyWith(authStatus: AuthStatus.failure));
+        MessageHelper.showSnackBarMessage(
+          isSuccess: false,
+          message: error.toString(),
+        );
+      },
+      (success) {
+        emit(state.copyWith(authStatus: AuthStatus.success));
+        getProfile();
+        MessageHelper.showSnackBarMessage(isSuccess: true, message: "Success");
+      },
+    );
+  }
+
+  Future<void> _pickImage(ImageSource source) async {
+    final pickedFile = await _picker.pickImage(source: source);
+    final file = File(pickedFile!.path);
+    if (pickedFile != null) {
+      updateProfile(avatar: file);
+      // Do something with the picked image
+      // print("Picked image: ${pickedFile.path}");
+
+      Navigator.of(context).pop(); // close dialog
+    }
+  }
+
+  void showAddPhotoDialog() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text("Add Photo"),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              ListTile(
+                leading: Icon(Icons.camera_alt),
+                title: Text("Take Photo"),
+                onTap: () => _pickImage(ImageSource.camera),
+              ),
+              ListTile(
+                leading: Icon(Icons.photo_library),
+                title: Text("Choose from Gallery"),
+                onTap: () => _pickImage(ImageSource.gallery),
+              ),
+            ],
+          ),
+        );
+      },
+    );
   }
 
   Future<void> signInWithGoogle() async {
@@ -165,7 +235,9 @@ class AuthCubit extends Cubit<AuthState> {
         );
       },
       (success) {
-        emit(state.copyWith(authStatus: AuthStatus.success));
+        emit(
+          state.copyWith(authStatus: AuthStatus.success, userModel: success),
+        );
       },
     );
   }
@@ -270,7 +342,7 @@ class AuthCubit extends Cubit<AuthState> {
           );
           MessageHelper.showSnackBarMessage(
             isSuccess: false,
-            message: f.toString(),
+            message: "ເບີໂທຫລືລະຫັດຜ່ານບໍ່ຖືກຕ້ອງ",
           );
         },
         (success) {
@@ -347,12 +419,45 @@ class AuthCubit extends Cubit<AuthState> {
     );
   }
 
+  Future<void> ChangePhoneNumber({required String phoneNumber}) async {
+    try {
+      emit(state.copyWith(authStatus: AuthStatus.loading));
+      var result = await authRepositories.ChangePhoneNumber(
+        newPhoneNumber: phoneNumber,
+      );
+      result.fold(
+        (f) {
+          emit(
+            state.copyWith(authStatus: AuthStatus.failure, error: f.toString()),
+          );
+          MessageHelper.showSnackBarMessage(
+            isSuccess: false,
+            message: "ຜິດພາດ",
+          );
+        },
+        (success) {
+          emit(state.copyWith(authStatus: AuthStatus.success));
+          clear();
+          getProfile();
+          NavService.pushReplacementNamed(AppRoutes.homepage);
+          MessageHelper.showSnackBarMessage(
+            isSuccess: true,
+            message: "ປ່ຽນເບີໂທສຳເລັດ",
+          );
+        },
+      );
+    } catch (e) {
+      emit(state.copyWith(authStatus: AuthStatus.failure, error: e.toString()));
+    }
+  }
+
   Future<void> ChangePassword({
     required String oldPassword,
     required String password,
     required String confirmPassword,
   }) async {
     try {
+      emit(state.copyWith(authStatus: AuthStatus.loading));
       var result = await authRepositories.ChangePassword(
         oldPassword: oldPassword,
         password: password,
@@ -491,6 +596,44 @@ class AuthCubit extends Cubit<AuthState> {
     }
   }
 
+  Future<void> verifyChangeOTP() async {
+    try {
+      if (_verificationId == null || _verificationId == "") {
+        emit(
+          state.copyWith(
+            authStatus: AuthStatus.failure,
+            error: 'ລະຫັດ otp ບໍ່ຖືກຕ້ອງ',
+          ),
+        );
+        MessageHelper.showSnackBarMessage(
+          isSuccess: false,
+          message: "ລະຫັດ otp ບໍ່ຖືກຕ້ອງ",
+        );
+      } else {
+        PhoneAuthCredential credential = PhoneAuthProvider.credential(
+          verificationId: _verificationId,
+          smsCode: pinController.text,
+        );
+        if (credential.smsCode == pinController.text) {
+          signInWithChangePhone(credential);
+        } else {
+          emit(
+            state.copyWith(
+              authStatus: AuthStatus.failure,
+              error: 'ເບີນີ້ມີຢູ່ໃນລະບົບແລ້ວ',
+            ),
+          );
+          MessageHelper.showSnackBarMessage(
+            isSuccess: false,
+            message: "ເບີນີ້ມີຢູ່ໃນລະບົບແລ້ວ",
+          );
+        }
+      }
+    } catch (e) {
+      emit(state.copyWith(error: e.toString(), authStatus: AuthStatus.failure));
+    }
+  }
+
   Future<void> verifyOTP() async {
     try {
       if (_verificationId == null || _verificationId == "") {
@@ -526,6 +669,34 @@ class AuthCubit extends Cubit<AuthState> {
       }
     } catch (e) {
       emit(state.copyWith(error: e.toString(), authStatus: AuthStatus.failure));
+    }
+  }
+
+  Future<void> signInWithChangePhone(PhoneAuthCredential credential) async {
+    try {
+      final userCredential = await auth.signInWithCredential(credential);
+      await HiveDatabase.deleteGoogleToken();
+      if (userCredential.user != null) {
+        final user = await userCredential.user!.getIdToken();
+        final token = await user;
+        await HiveDatabase.saveGoogleToken(googleToken: token!);
+        NavService.pushReplacementNamed(AppRoutes.changePhoneNumber);
+      } else {
+        emit(
+          state.copyWith(
+            authStatus: AuthStatus.failure,
+            error: 'ເບີນີ້ມີຢູ່ໃນລະບົບແລ້ວ',
+          ),
+        );
+        MessageHelper.showSnackBarMessage(
+          isSuccess: false,
+          message: "ເບີນີ້ມີຢູ່ໃນລະບົບແລ້ວ",
+        );
+      }
+    } on FirebaseException catch (ex) {
+      emit(
+        state.copyWith(authStatus: AuthStatus.failure, error: ex.toString()),
+      );
     }
   }
 

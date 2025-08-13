@@ -17,6 +17,7 @@ import 'package:m9/feature/usermode/presentation/history/presentation/pages/hist
 import 'package:m9/feature/usermode/presentation/home/presentation/pages/home_page.dart';
 
 import 'package:m9/feature/usermode/presentation/report/presentation/pages/report_page.dart';
+import 'package:m9/feature/usermode/presentation/setting/page/change/widget/change_phoneNumber_widget.dart';
 import 'package:m9/feature/usermode/presentation/setting/page/setting_page.dart';
 import 'package:m9/feature/auth/presentation/onboarding/presentation/pages/onboarding/onboarding_page.dart';
 
@@ -42,6 +43,7 @@ class AppRoutes {
   static const String forgot_otp = "/forgot_otp";
   static const String reset_password = "/reset_password";
   static const String polylinefinderdriver = "/polylinefinderdriver";
+  static const String changePhoneNumber = "/chage_phone";
 
   // ການກຳນົດເສັ້ນທາງ
   static Map<String, Widget Function(BuildContext)> get routes => {
@@ -63,5 +65,6 @@ class AppRoutes {
     confirm: (context) => const ConfirmPage(),
     reset_password: (context) => const ResetPasswordPage(),
     register_online: (context) => const RegisterOnline(),
+    changePhoneNumber: (context)=> const ChangeNumberWidget(),
   };
 }

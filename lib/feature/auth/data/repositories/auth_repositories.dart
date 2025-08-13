@@ -118,25 +118,56 @@ class AuthRepositories {
     }
   }
 
-  Future<Either<Failure, bool>> editProfile({
+  Future<Either<Failure, bool>> updateProfile({required File avatar}) async {
+    try {
+      final result = await authService.updateProfile(avatar: avatar);
+      if (result != true) {
+        return Left(Failure("Error"));
+      }
+      return right(result);
+    } catch (e) {
+      return Left(Failure(e.toString()));
+    }
+  }
+
+  Future<Either<Failure, bool>> updateUser({
     required String firstName,
     required String lastName,
     required String dob,
-    required String phoneNumber,
+    required String username,
     required String email,
     required String address,
     required String gender,
   }) async {
     try {
-      final result = await authService.editProfile(
+      final result = await authService.updateUser(
         firstName: firstName,
         lastName: lastName,
         dob: dob,
-        phoneNumber: phoneNumber,
         email: email,
         address: address,
         gender: gender,
+        username: username,
       );
+      if (result != true) {
+        return Left(Failure("Error"));
+      }
+      return right(result);
+    } catch (e) {
+      return Left(Failure(e.toString()));
+    }
+  }
+
+  Future<Either<Failure, bool>> ChangePhoneNumber({
+    required String newPhoneNumber,
+  }) async {
+    try {
+      final result = await authService.ChangePhoneNumber(
+        newPhoneNumber: newPhoneNumber,
+      );
+      if (result != true) {
+        return Left(Failure("Error"));
+      }
       return Right(result);
     } catch (e) {
       return Left(Failure(e.toString()));
@@ -154,6 +185,9 @@ class AuthRepositories {
         password: password,
         confirmPassword: confirmPassword,
       );
+      if (result != true) {
+        return Left(Failure("Error"));
+      }
       return Right(result);
     } catch (e) {
       return Left(Failure(e.toString()));
@@ -203,17 +237,6 @@ class AuthRepositories {
         accountNo: accountNo,
         image: image,
       );
-      return Right(result);
-    } catch (e) {
-      return Left(Failure(e.toString()));
-    }
-  }
-
-  Future<Either<Failure, bool>> deleteBankAccount({
-    required String accountId,
-  }) async {
-    try {
-      final result = await authService.deleteBankAccount(accountId: accountId);
       return Right(result);
     } catch (e) {
       return Left(Failure(e.toString()));

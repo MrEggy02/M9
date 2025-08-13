@@ -10,7 +10,7 @@ class ApiPaths {
   static String mqttURL = 'mqtts://mqtt.lxserve.xyz:8883';
   static String mqttURL2 = 'https://mqtt.lxserve.xyz:1883';
   static String sessionID = '&path=register-driver';
-  
+
   /// Http request methods
   static const String getRequest = 'get';
   static const String postRequest = 'post';
@@ -26,8 +26,8 @@ class ApiPaths {
   static String google = '${baseURL}/user/register/google';
   static String changePasswordPath = '${baseURL}/user/change-password';
   static String getProfilePath = '${baseURL}/user/me';
-  static String updateProfile = '${baseURL}/user/update/';
-  static String updateProfileImage = '${baseURL}/user/updateProfile/';
+  static String updateProfile = '${baseURL}/user/update';
+
   static String editPassword = '${baseURL}/user/updatePassword';
   static String editBank = '${baseURL}/user/updatePassword';
   //---------------------- bank account ---------------------
@@ -43,13 +43,19 @@ class ApiPaths {
   static String getbannerPath = '${baseURL}/user/banner/getall';
   static String getCarTypePath = '${baseURL}/user/car-type/getall';
   //---------------------- order ---------------------
-  static String createOrderCustomer = '${baseURL}/user/customer/order/create'; // ການສ້າງ
+  static String createOrderCustomer =
+      '${baseURL}/user/customer/order/create'; // ການສ້າງ
   static String createOrderDriver = '${baseURL}/user/driver/order/create';
   static String getUserSurveyDriver = '${baseURL}/user/customer/order/drivers?';
   //---------------------- driver ---------------------
- static String chooseOrder = '${baseURL}user/driver/order/choose/:id'; // ແມ່ນdriver ກົດຍອມຮັບ ຕ້ອງ login ເຂົ້າ driver ແລະ customer ແຍກກັນ
- static String chooseDriver = '${baseURL}/user/customer/order/choose-driver'; // ລູກຄ້າກົດຍອດຮັບ
- static String updateDriverProgress = '${baseURL}/user/driver/order/progress/:id'; // ເຈົ້າຂອງລົດກົດຮັບຄົນຂື້ນລົດ
- static String updateDriverSuccess = '${baseURL}/user/driver/order/complete'; // ເຈົ້າຂອງລົດກົດຮັບຄົນຂື້ນລົດ
- static String reviewDriver = "${baseURL}user/order/customer/review"; // review driver
+  static String chooseOrder =
+      '${baseURL}user/driver/order/choose/:id'; // ແມ່ນdriver ກົດຍອມຮັບ ຕ້ອງ login ເຂົ້າ driver ແລະ customer ແຍກກັນ
+  static String chooseDriver =
+      '${baseURL}/user/customer/order/choose-driver'; // ລູກຄ້າກົດຍອດຮັບ
+  static String updateDriverProgress =
+      '${baseURL}/user/driver/order/progress/:id'; // ເຈົ້າຂອງລົດກົດຮັບຄົນຂື້ນລົດ
+  static String updateDriverSuccess =
+      '${baseURL}/user/driver/order/complete'; // ເຈົ້າຂອງລົດກົດຮັບຄົນຂື້ນລົດ
+  static String reviewDriver =
+      "${baseURL}user/order/customer/review"; // review driver
 }

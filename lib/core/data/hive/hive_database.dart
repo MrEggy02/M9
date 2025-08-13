@@ -1,8 +1,5 @@
 import 'dart:convert';
 import 'dart:io';
-
-import 'package:encrypt/encrypt.dart';
-import 'package:encrypt/encrypt_io.dart';
 import 'package:hive_ce/hive.dart';
 import 'package:m9/feature/auth/domain/models/user_model.dart';
 import 'package:path_provider/path_provider.dart';
@@ -119,6 +116,8 @@ class HiveDatabase {
       'profile',
       'tokens',
       'user_id',
+      'googleToken',
+      
     ]);
 
     return true;
@@ -157,7 +156,9 @@ class HiveDatabase {
     final userBox = await box!.openBox<Map>('auth');
     final data = await userBox.getAll(['profile']);
     final respone = jsonDecode(data[0]!['data']);
+    print("====>${respone}");
     final user = UserModel.fromJson(respone);
+     print("====>${user.username}");
     return user;
   }
 
@@ -165,7 +166,7 @@ class HiveDatabase {
     required String phoneNumber,
     required String password,
   }) async {
-    final authBox = await box!.openBox('auth');
+    final authBox = await box!.openBox<Map>('auth');
     await authBox.put("remember", {
       "phoneNumber": "20${phoneNumber}",
       "password": password,

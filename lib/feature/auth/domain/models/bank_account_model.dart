@@ -1,4 +1,7 @@
+import 'dart:convert';
 
+List<BankAccount> bankModelFromJson(String str) => List<BankAccount>.from(
+    json.decode(str).map((x) => BankAccount.fromJson(x)));
 class BankAccount {
   final String id, bankName, accountName, accountNo;
   final bool isActive;

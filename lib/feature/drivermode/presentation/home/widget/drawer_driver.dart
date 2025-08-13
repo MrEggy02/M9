@@ -110,7 +110,7 @@ class _DrawerDriverState extends State<DrawerDriver> {
           ),
           // Bottom container - will always stay at the bottom
           Padding(
-            padding: const EdgeInsets.symmetric(vertical: 30, horizontal: 10),
+            padding: const EdgeInsets.symmetric(vertical: 60, horizontal: 10),
             child: GestureDetector(
               onTap: (){
                Navigator.pushReplacementNamed(context, AppRoutes.homepage);

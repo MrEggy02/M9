@@ -9,7 +9,7 @@ import 'package:m9/feature/auth/cubit/auth_cubit.dart';
 import 'package:m9/feature/auth/cubit/auth_state.dart';
 import 'package:m9/feature/auth/data/repositories/auth_repositories.dart';
 import 'package:m9/feature/auth/presentation/signup/otp/widget/otp_pin.dart';
-import 'package:m9/feature/usermode/presentation/setting/widget/otp.dart';
+import 'package:m9/feature/usermode/presentation/setting/page/change/widget/otp.dart';
 
 class CreateAccount extends StatelessWidget {
   const CreateAccount({super.key});

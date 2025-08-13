@@ -1,10 +1,17 @@
 import 'dart:io';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:m9/core/config/theme/app_color.dart';
+import 'package:m9/core/constants/app_constants.dart';
 import 'package:m9/feature/auth/cubit/auth_cubit.dart';
 
 import 'package:m9/feature/auth/cubit/auth_state.dart';
+import 'package:m9/feature/usermode/presentation/home/presentation/widgets/drawer_user.dart';
+import 'package:m9/feature/usermode/presentation/setting/page/bank/page/banklist.dart';
+import 'package:m9/feature/usermode/presentation/setting/page/change/page/changenumber.dart';
+import 'package:m9/feature/usermode/presentation/setting/page/person/page/personal.dart';
 
 class SettingPage extends StatefulWidget {
   const SettingPage({super.key});
@@ -106,9 +113,12 @@ class _SettingPageState extends State<SettingPage> {
     );
   }
 
+  final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
   @override
   Widget build(BuildContext context) {
+    var size = MediaQuery.of(context).size;
     return Scaffold(
+      key: scaffoldKey,
       backgroundColor: Colors.white,
       appBar: AppBar(
         title: const Text(
@@ -117,24 +127,24 @@ class _SettingPageState extends State<SettingPage> {
         ),
         centerTitle: true,
         elevation: 0,
-        leading: IconButton(
-          icon: Container(
-            padding: const EdgeInsets.all(4),
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(8),
+        leading: GestureDetector(
+          onTap: () {
+            scaffoldKey.currentState!.openDrawer();
+          },
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Container(
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(15),
+                boxShadow: [BoxShadow(blurRadius: 1, spreadRadius: 0.5)],
+              ),
+              child: Center(child: Icon(Icons.menu, size: 25)),
             ),
-            child: const Icon(Icons.menu, color: Colors.black),
           ),
-          onPressed: () {},
         ),
-        /*  actions: [
-          IconButton(
-            icon: const Icon(Icons.refresh),
-            onPressed: _loadProfileData,
-          ),
-        ],*/
       ),
+      drawer: DrawerUser(),
       body: BlocConsumer<AuthCubit, AuthState>(
         listener: (context, state) {
           if (state.authStatus == AuthStatus.failure && state.error != null) {
@@ -153,6 +163,7 @@ class _SettingPageState extends State<SettingPage> {
           }
         },
         builder: (context, state) {
+          var cubit = context.read<AuthCubit>();
           if (state.authStatus == AuthStatus.loading &&
               state.userModel == null) {
             return const Center(
@@ -167,31 +178,13 @@ class _SettingPageState extends State<SettingPage> {
             );
           }
 
-          final user = state.userModel;
-
-          // Updated display name logic - prioritize firstName + lastName
-          String displayName = 'ບໍ່ມີຂໍ້ມູນ';
-          if (user?.firstName != null && user!.firstName!.isNotEmpty) {
-            final firstName = user.firstName!;
-            final lastName = user.lastName ?? '';
-            displayName = '$firstName $lastName'.trim();
-          } else if (user?.displayName != null &&
-              user!.displayName!.isNotEmpty) {
-            displayName = user.displayName!;
-          } else if (user?.username != null && user!.username!.isNotEmpty) {
-            displayName = user.username!;
-          }
-
-          final phoneNumber = user?.phoneNumber ?? 'ບໍ່ມີເບີໂທ';
-
           return RefreshIndicator(
             onRefresh: () async {
-              //  _loadProfileData();
+              cubit.getProfile();
             },
-            color: const Color(0xFFFECE0C),
+            color: AppColors.primaryColor,
             child: Column(
               children: [
-                // Profile Card with Gradient
                 Container(
                   margin: const EdgeInsets.all(16),
                   padding: const EdgeInsets.all(16),
@@ -220,40 +213,24 @@ class _SettingPageState extends State<SettingPage> {
                               width: 70,
                               height: 70,
                               child:
-                                  _profileImage != null
-                                      ? Image.file(
-                                        _profileImage!,
-                                        fit: BoxFit.cover,
-                                        errorBuilder: (
-                                          context,
-                                          error,
-                                          stackTrace,
-                                        ) {
-                                          return Image.asset(
-                                            'assets/images/image.png',
+                                  state.userModel!.displayName == null
+                                      ? state.userModel!.avatar == null
+                                          ? Image.asset(
+                                            "assets/icons/user2.png",
+                                          )
+                                          : CachedNetworkImage(
+                                            imageUrl:
+                                                AppConstants.imageUrl +
+                                                state.userModel!.avatar
+                                                    .toString(),
                                             fit: BoxFit.cover,
-                                          );
-                                        },
-                                      )
-                                      : (user?.avatar != null &&
-                                          user!.avatar!.isNotEmpty)
-                                      ? Image.network(
-                                        user.avatar!,
+                                            height: 80,
+                                          )
+                                      : CachedNetworkImage(
+                                        imageUrl:
+                                            state.userModel!.avatar.toString(),
                                         fit: BoxFit.cover,
-                                        errorBuilder: (
-                                          context,
-                                          error,
-                                          stackTrace,
-                                        ) {
-                                          return Image.asset(
-                                            'assets/images/image.png',
-                                            fit: BoxFit.cover,
-                                          );
-                                        },
-                                      )
-                                      : Image.asset(
-                                        'assets/images/image.png',
-                                        fit: BoxFit.cover,
+                                        height: 80,
                                       ),
                             ),
                           ),
@@ -261,7 +238,9 @@ class _SettingPageState extends State<SettingPage> {
                             bottom: 0,
                             right: 0,
                             child: GestureDetector(
-                          //    onTap: _showAddPhotoDialog,
+                              onTap: () {
+                                cubit.showAddPhotoDialog();
+                              },
                               child: Container(
                                 padding: const EdgeInsets.all(4),
                                 decoration: const BoxDecoration(
@@ -283,37 +262,49 @@ class _SettingPageState extends State<SettingPage> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(
-                              displayName,
-                              style: const TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 18,
-                                color: Colors.black,
-                              ),
-                              maxLines: 2,
-                              overflow: TextOverflow.ellipsis,
+                            Container(
+                              width: 200,
+                              child:
+                                  state.userModel!.displayName == null
+                                      ? Text(
+                                        state.userModel!.username.toString(),
+                                        maxLines: 1,
+                                        overflow: TextOverflow.ellipsis,
+                                        style: TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 15,
+                                        ),
+                                      )
+                                      : Text(
+                                        "${state.userModel!.displayName} ",
+                                        maxLines: 1,
+                                        overflow: TextOverflow.ellipsis,
+                                        style: TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 15,
+                                        ),
+                                      ),
                             ),
+
                             const SizedBox(height: 4),
                             Text(
-                              phoneNumber,
+                              "+856 ${state.userModel!.phoneNumber.toString()}",
                               style: const TextStyle(
                                 color: Colors.black87,
                                 fontSize: 14,
                               ),
                             ),
-                            if (user?.email != null &&
-                                user!.email!.isNotEmpty) ...[
-                              const SizedBox(height: 2),
-                              Text(
-                                user.email!,
-                                style: const TextStyle(
-                                  color: Colors.black54,
-                                  fontSize: 12,
-                                ),
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
+
+                            const SizedBox(height: 2),
+                            Text(
+                              "120 ຈຳນວນຖ້ຽວ",
+                              style: const TextStyle(
+                                color: Colors.black54,
+                                fontSize: 12,
                               ),
-                            ],
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            ),
                           ],
                         ),
                       ),
@@ -329,27 +320,25 @@ class _SettingPageState extends State<SettingPage> {
                         Icons.badge,
                         'ຂໍ້ມູນສ່ວນຕົວ',
                         onTap: () {
-                          // Navigator.push(
-                          //   context,
-                          //   MaterialPageRoute(
-                          //     builder: (context) => const PersonalInfoPage(),
-                          //   ),
-                          // );
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const PersonalInfoPage(),
+                            ),
+                          );
                         },
                       ),
                       _buildMenuItem(
                         Icons.credit_card_outlined,
                         'ຂໍ້ມູນບັນຊີທະນາຄານ',
                         onTap: () {
-                          // Navigator.push(
-                          //   context,
-                          //   MaterialPageRoute(
-                          //     builder:
-                          //         (context) => const BankAccountsListPage(),
-                          //   ),
-                          // ).then(
-                          //   (_) => _loadProfileData(),
-                          // ); // Refresh data when returning
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder:
+                                  (context) => const BankAccountsListPage(),
+                            ),
+                          );
                         },
                       ),
                       _buildMenuItem(
@@ -380,12 +369,12 @@ class _SettingPageState extends State<SettingPage> {
                         Icons.phone_callback,
                         'ປ່ຽນເບີໂທ',
                         onTap: () {
-                          // Navigator.push(
-                          //   context,
-                          //   MaterialPageRoute(
-                          //     builder: (context) => const ChangeNumberPage(),
-                          //   ),
-                          // );
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const ChangeNumber(),
+                            ),
+                          );
                         },
                       ),
                       _buildMenuItem(

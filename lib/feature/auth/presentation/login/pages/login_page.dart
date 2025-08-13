@@ -88,20 +88,23 @@ class _LoginPageState extends State<LoginPage> {
                       Checkbox(
                         value: remember,
                         onChanged: (value) {
-                          if (cubit.phoneNumber.text.isEmpty &&
-                              cubit.password.text.isEmpty) {
-                            setState(() {
-                              remember = value!;
-                            });
-                          } else {
-                            setState(() {
-                              remember = value!;
-                              cubit.saveLoginRemember(
-                                phoneNumber: cubit.phoneNumber.text,
-                                password: cubit.password.text,
-                              );
-                            });
-                          }
+                          setState(() {
+                            remember = value!;
+                          });
+                          // if (cubit.phoneNumber.text.isEmpty &&
+                          //     cubit.password.text.isEmpty) {
+                          //   setState(() {
+                          //     remember = value!;
+                          //   });
+                          // } else {
+                          //   setState(() {
+                          //     remember = value!;
+                          //     cubit.saveLoginRemember(
+                          //       phoneNumber: cubit.phoneNumber.text,
+                          //       password: cubit.password.text,
+                          //     );
+                          //   });
+                          // }
                         },
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(4),

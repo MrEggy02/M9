@@ -1,6 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:m9/core/config/theme/app_color.dart';
+import 'package:m9/core/data/response/messageHelper.dart';
+import 'package:m9/feature/auth/cubit/auth_cubit.dart';
+import 'package:m9/feature/auth/cubit/auth_state.dart';
+import 'package:m9/feature/auth/data/repositories/auth_repositories.dart';
 import 'package:m9/feature/drivermode/presentation/home/widget/%E0%BA%B6banner_driver.dart';
 import 'package:m9/feature/drivermode/presentation/home/widget/drawer_driver.dart';
 import 'package:m9/feature/drivermode/presentation/home/widget/header_driver.dart';
@@ -104,7 +109,7 @@ class _HomePageState extends State<HomePage> {
                 TextButton(
                   child: const Text(
                     'ACCEPT',
-                    style: TextStyle( color: AppColors.primaryColor,),
+                    style: TextStyle(color: AppColors.primaryColor),
                   ),
                   onPressed: () {
                     Geolocator.requestPermission();
