@@ -118,6 +118,16 @@ class AuthRepositories {
     }
   }
 
+  Future<Either<Failure, bool?>> getMe() async {
+    try {
+      final result = await authService.getMe();
+
+      return Right(result);
+    } catch (e) {
+      return Left(Failure(e.toString()));
+    }
+  }
+
   Future<Either<Failure, bool>> updateProfile({required File avatar}) async {
     try {
       final result = await authService.updateProfile(avatar: avatar);
@@ -160,10 +170,12 @@ class AuthRepositories {
 
   Future<Either<Failure, bool>> ChangePhoneNumber({
     required String newPhoneNumber,
+    required String googleToken,
   }) async {
     try {
       final result = await authService.ChangePhoneNumber(
         newPhoneNumber: newPhoneNumber,
+        googleToken: googleToken,
       );
       if (result != true) {
         return Left(Failure("Error"));
@@ -193,11 +205,15 @@ class AuthRepositories {
       return Left(Failure(e.toString()));
     }
   }
-
-  Future<Either<Failure, List<BankAccount>>> getBankAccounts() async {
+  
+//bankaccount part 
+  Future<Either<Failure, BankAccount>> getBankAccount() async {
     try {
-      final result = await authService.getBankAccounts();
-      return Right(result!);
+      final result = await authService.getBankAccount();
+      if (result == null) {
+        return Left(Failure('No bank account found'));
+      }
+      return Right(result);
     } catch (e) {
       return Left(Failure(e.toString()));
     }
@@ -222,24 +238,16 @@ class AuthRepositories {
     }
   }
 
-  Future<Either<Failure, bool>> editBankAccount({
-    required String accountId,
-    required String bankName,
-    required String accountName,
-    required String accountNo,
-    String? image,
-  }) async {
+  Future<Either<Failure, BankAccount>> updateBankAccount(
+    BankAccount account,
+  ) async {
     try {
-      final result = await authService.editBankAccount(
-        accountId: accountId,
-        bankName: bankName,
-        accountName: accountName,
-        accountNo: accountNo,
-        image: image,
-      );
+      final result = await authService.updateBankAccount(account);
+      if (result == null) return Left(Failure('Update failed'));
       return Right(result);
     } catch (e) {
       return Left(Failure(e.toString()));
     }
   }
+
 }
