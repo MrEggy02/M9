@@ -1,7 +1,10 @@
 // ignore_for_file: unnecessary_null_comparison
 import 'dart:io';
 
+// ignore: unused_import
+import 'package:dartz/dartz.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+// ignore: unused_import
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -9,10 +12,14 @@ import 'package:google_sign_in/google_sign_in.dart' show GoogleSignIn;
 import 'package:image_picker/image_picker.dart';
 
 import 'package:m9/core/data/hive/hive_database.dart';
+// ignore: unused_import
+import 'package:m9/core/data/network/api_status.dart';
 import 'package:m9/core/data/response/messageHelper.dart';
 import 'package:m9/core/routes/app_routes.dart';
 import 'package:m9/feature/auth/cubit/auth_state.dart';
 import 'package:m9/feature/auth/data/repositories/auth_repositories.dart';
+import 'package:m9/feature/auth/domain/models/bank_account_model.dart';
+// ignore: unused_import
 import 'package:m9/feature/auth/presentation/reset/page/reset_password.dart';
 import 'package:nav_service/nav_service.dart';
 
@@ -25,9 +32,6 @@ class AuthCubit extends Cubit<AuthState> {
   bool mounted = true;
   bool isStart = false;
   int currenIndex = 0;
-
-  final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
-  final formKeyLogin = GlobalKey<FormState>();
 
   TextEditingController phoneNumber = TextEditingController();
   TextEditingController newPhoneNumber = TextEditingController();
@@ -45,18 +49,22 @@ class AuthCubit extends Cubit<AuthState> {
   TextEditingController bankNameController = TextEditingController();
   TextEditingController accountNoController = TextEditingController();
   TextEditingController bankIdController = TextEditingController();
+
   bool isCheck = false;
   bool isPhone = false;
   String? selectedGender;
   final ImagePicker _picker = ImagePicker();
   var dataRemember;
+
   final FirebaseAuth auth = FirebaseAuth.instance;
   // final GoogleSignIn signIn = GoogleSignIn.instance;
 
   String _verificationId = '';
+  // ignore: unused_field
   int? _forceResendingToken;
   @override
   Future<void> close() {
+    dobController.dispose();
     mounted = false;
     return super.close();
   }
@@ -97,6 +105,61 @@ class AuthCubit extends Cubit<AuthState> {
     }
   }
 
+  Future<void> updateUser({
+    required String firstName,
+    required String lastName,
+    required String dob,
+    required String username,
+    required String email,
+    required String address,
+    required String gender,
+  }) async {
+    emit(state.copyWith(authStatus: AuthStatus.loading));
+
+    try {
+      final result = await authRepositories.updateUser(
+        firstName: firstName,
+        lastName: lastName,
+        dob: dob,
+        username: username,
+        email: email,
+        address: address,
+        gender: gender,
+      );
+
+      result.fold(
+        (error) => _handleFailure(error.toString()),
+        (success) =>
+            success
+                ? _handleSuccess()
+                : _handleFailure("Failed to update profile"),
+      );
+    } catch (e) {
+      _handleFailure(e.toString());
+    }
+  }
+void clearUpdateFlag() {
+  emit(state.copyWith(isUpdate: false));
+}
+
+ void _handleSuccess() async {
+  await getProfile();
+  emit(state.copyWith(
+    authStatus: AuthStatus.success,
+    isUpdate: true, 
+  ));
+  MessageHelper.showSnackBarMessage(
+    isSuccess: true,
+    message: "Profile updated successfully",
+  );
+}
+
+
+  void _handleFailure(String error) {
+    emit(state.copyWith(authStatus: AuthStatus.failure, error: error));
+    MessageHelper.showSnackBarMessage(isSuccess: false, message: error);
+  }
+
   Future<void> updateProfile({required File avatar}) async {
     emit(state.copyWith(authStatus: AuthStatus.loading));
     final result = await authRepositories.updateProfile(avatar: avatar);
@@ -111,7 +174,6 @@ class AuthCubit extends Cubit<AuthState> {
       (success) {
         emit(state.copyWith(authStatus: AuthStatus.success));
         getProfile();
-        MessageHelper.showSnackBarMessage(isSuccess: true, message: "Success");
       },
     );
   }
@@ -223,9 +285,9 @@ class AuthCubit extends Cubit<AuthState> {
     }
   }
 
-  Future<void> getProfile() async {
+  Future<void> getMe() async {
     emit(state.copyWith(authStatus: AuthStatus.loading));
-    final result = await authRepositories.getProfile();
+    final result = await authRepositories.getMe();
     result.fold(
       (error) {
         emit(state.copyWith(authStatus: AuthStatus.failure));
@@ -235,11 +297,33 @@ class AuthCubit extends Cubit<AuthState> {
         );
       },
       (success) {
-        emit(
-          state.copyWith(authStatus: AuthStatus.success, userModel: success),
-        );
+        emit(state.copyWith(authStatus: AuthStatus.success));
       },
     );
+  }
+
+  Future<void> getProfile() async {
+    emit(state.copyWith(authStatus: AuthStatus.loading));
+
+    try {
+      final result = await authRepositories.getProfile();
+
+      result.fold(
+        (error) {
+          emit(
+            state.copyWith(
+              authStatus: AuthStatus.failure,
+              error: error.toString(),
+            ),
+          );
+        },
+        (user) {
+          emit(state.copyWith(authStatus: AuthStatus.success, userModel: user));
+        },
+      );
+    } catch (e) {
+      emit(state.copyWith(authStatus: AuthStatus.failure, error: e.toString()));
+    }
   }
 
   Future<void> Forgot({required String phoneNumber}) async {
@@ -284,7 +368,7 @@ class AuthCubit extends Cubit<AuthState> {
         emit(state.copyWith(authStatus: AuthStatus.success));
         MessageHelper.showSnackBarMessage(
           isSuccess: true,
-          message: "ເບີຂອງທ່ານຍັງບໍ່ເຄີຍລົງທະບຽນ",
+          message: "ເບີນີ້ໃຊ້ງານໄດ້",
         );
       },
     );
@@ -419,11 +503,15 @@ class AuthCubit extends Cubit<AuthState> {
     );
   }
 
-  Future<void> ChangePhoneNumber({required String phoneNumber}) async {
+  Future<void> ChangePhoneNumber({
+    required String newPhoneNumber,
+    required String googleToken,
+  }) async {
     try {
       emit(state.copyWith(authStatus: AuthStatus.loading));
       var result = await authRepositories.ChangePhoneNumber(
-        newPhoneNumber: phoneNumber,
+        newPhoneNumber: newPhoneNumber,
+        googleToken: googleToken,
       );
       result.fold(
         (f) {
@@ -435,9 +523,11 @@ class AuthCubit extends Cubit<AuthState> {
             message: "ຜິດພາດ",
           );
         },
-        (success) {
-          emit(state.copyWith(authStatus: AuthStatus.success));
+        (success) async {
           clear();
+          await getMe();
+          emit(state.copyWith(authStatus: AuthStatus.success));
+
           getProfile();
           NavService.pushReplacementNamed(AppRoutes.homepage);
           MessageHelper.showSnackBarMessage(
@@ -678,9 +768,8 @@ class AuthCubit extends Cubit<AuthState> {
       await HiveDatabase.deleteGoogleToken();
       if (userCredential.user != null) {
         final user = await userCredential.user!.getIdToken();
-        final token = await user;
-        await HiveDatabase.saveGoogleToken(googleToken: token!);
-        NavService.pushReplacementNamed(AppRoutes.changePhoneNumber);
+        print("======>$user");
+        ChangePhoneNumber(newPhoneNumber: phoneNumber.text, googleToken: user!);
       } else {
         emit(
           state.copyWith(
@@ -754,5 +843,69 @@ class AuthCubit extends Cubit<AuthState> {
         state.copyWith(authStatus: AuthStatus.failure, error: ex.toString()),
       );
     }
+  }
+
+  //bankaccount part
+  Future<void> fetchBankAccount() async {
+    emit(state.copyWith(authStatus: AuthStatus.loading));
+    final result = await authRepositories.getBankAccount();
+    result.fold(
+      (failure) => emit(
+        state.copyWith(authStatus: AuthStatus.failure, error: failure.message),
+      ),
+      (account) => emit(
+        state.copyWith(authStatus: AuthStatus.success, bankAccount: account),
+      ),
+    );
+  }
+
+  Future<void> addBankAccount({
+    required String bankName,
+    required String accountName,
+    required String accountNo,
+    required File image,
+  }) async {
+    emit(state.copyWith(authStatus: AuthStatus.loading));
+
+    final result = await authRepositories.addBankAccount(
+      bankName: bankName,
+      accountName: accountName,
+      accountNo: accountNo,
+      image: image,
+    );
+
+    result.fold(
+      (failure) => emit(
+        state.copyWith(authStatus: AuthStatus.failure, error: failure.message),
+      ),
+      (success) async {
+        if (success) {
+          await fetchBankAccount();
+        } else {
+          emit(
+            state.copyWith(
+              authStatus: AuthStatus.failure,
+              error: 'Failed to add bank account',
+            ),
+          );
+        }
+      },
+    );
+  }
+
+  Future<void> updateBankAccount(BankAccount updated) async {
+    emit(state.copyWith(authStatus: AuthStatus.loading));
+    final result = await authRepositories.updateBankAccount(updated);
+    result.fold(
+      (failure) => emit(
+        state.copyWith(authStatus: AuthStatus.failure, error: failure.message),
+      ),
+      (account) async {
+        emit(
+          state.copyWith(authStatus: AuthStatus.success, bankAccount: account),
+        );
+        await fetchBankAccount();
+      },
+    );
   }
 }
