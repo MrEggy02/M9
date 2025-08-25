@@ -5,7 +5,14 @@ import 'package:m9/feature/auth/cubit/auth_cubit.dart';
 import 'package:m9/feature/auth/cubit/auth_state.dart';
 
 class GenderPersonalWidget extends StatefulWidget {
-  const GenderPersonalWidget({super.key});
+  final String? initialGender;
+  final ValueChanged<String?> onChanged;
+
+  const GenderPersonalWidget({
+    super.key,
+    required this.initialGender,
+    required this.onChanged,
+  });
 
   @override
   State<GenderPersonalWidget> createState() => _GenderPersonalWidgetState();
@@ -22,6 +29,15 @@ class _GenderPersonalWidgetState extends State<GenderPersonalWidget> {
       },
       builder: (context, state) {
         var cubit = context.read<AuthCubit>();
+
+        // Convert the value to match dropdown items if needed
+        String? displayValue;
+        if (cubit.selectedGender == 'male') {
+          displayValue = 'ຊາຍ';
+        } else if (cubit.selectedGender == 'female') {
+          displayValue = 'ຍິງ';
+        }
+
         return Container(
           height: 50,
           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
@@ -35,10 +51,7 @@ class _GenderPersonalWidgetState extends State<GenderPersonalWidget> {
               const SizedBox(width: 12),
               Expanded(
                 child: DropdownButton<String>(
-                  value:
-                      cubit.selectedGender != null 
-                          ? cubit.selectedGender
-                          : null,
+                  value: displayValue, // Use the converted value
                   hint: const Text("ເລືອກເພດ"),
                   isExpanded: true,
                   underline: const SizedBox(),
@@ -52,9 +65,17 @@ class _GenderPersonalWidgetState extends State<GenderPersonalWidget> {
                           )
                           .toList(),
                   onChanged: (newValue) {
+                    String? genderValue;
+                    if (newValue == 'ຊາຍ') {
+                      genderValue = 'male';
+                    } else if (newValue == 'ຍິງ') {
+                      genderValue = 'female';
+                    }
+
                     setState(() {
-                      cubit.selectedGender = newValue;
+                      cubit.selectedGender = genderValue;
                     });
+                    widget.onChanged(genderValue);
                   },
                 ),
               ),
