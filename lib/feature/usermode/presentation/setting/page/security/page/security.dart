@@ -1,4 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:m9/feature/auth/cubit/auth_cubit.dart';
+import 'package:m9/feature/auth/cubit/auth_state.dart';
+import 'package:m9/feature/usermode/presentation/setting/page/security/widget/password_box.dart';
+
 
 class SecurityInfoPage extends StatefulWidget {
   const SecurityInfoPage({super.key});
@@ -8,13 +13,21 @@ class SecurityInfoPage extends StatefulWidget {
 }
 
 class _SecurityInfoPageState extends State<SecurityInfoPage> {
-  final TextEditingController _phoneController = TextEditingController();
-  final TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _oldPasswordController = TextEditingController();
+  final TextEditingController _newPasswordController = TextEditingController();
+  final TextEditingController _confirmPasswordController = TextEditingController();
+
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  bool _isEditingPassword = false;
+  bool _showOldPassword = false;
+  bool _showNewPassword = false;
+  bool _showConfirmPassword = false;
 
   @override
   void dispose() {
-    _phoneController.dispose();
-    _passwordController.dispose();
+    _oldPasswordController.dispose();
+    _newPasswordController.dispose();
+    _confirmPasswordController.dispose();
     super.dispose();
   }
 
@@ -23,18 +36,21 @@ class _SecurityInfoPageState extends State<SecurityInfoPage> {
     return Scaffold(
       appBar: AppBar(
         leadingWidth: 120,
-        leading: Row(
-          children: [
-            const SizedBox(width: 8),
-            IconButton(
-              icon: const Icon(Icons.arrow_back_ios),
-              onPressed: () => Navigator.pop(context),
-            ),
-            const Text(
-              'ກັບຄືນ',
-              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
-            ),
-          ],
+        leading: GestureDetector(
+          onTap: () => Navigator.pop(context),
+          child: Row(
+            children: [
+              const SizedBox(width: 8),
+              IconButton(
+                icon: const Icon(Icons.arrow_back_ios),
+                onPressed: () => Navigator.pop(context),
+              ),
+              const Text(
+                'ກັບຄືນ',
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
+              ),
+            ],
+          ),
         ),
         title: const Text(
           'ຄວາມປອດໄພ',
@@ -43,104 +59,106 @@ class _SecurityInfoPageState extends State<SecurityInfoPage> {
         centerTitle: true,
         elevation: 0,
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          children: [
-            _buildSectionTitle('ເບີໂທ', 'ແກ້ໄຂເບີໂທ', onTap: () {
-              // Handle phone edit
-            }),
-            _buildEditableField(Icons.phone, 'ຫມາຍເລກໂທລະສັບ', _phoneController),
-
-            const SizedBox(height: 24),
-            _buildSectionTitle('ລະຫັດຜ່ານ', 'ແກ້ໄຂລະຫັດ', onTap: () {
-              // Handle password edit
-            }),
-            _buildEditableField(Icons.lock, 'ລະຫັດຜ່ານ', _passwordController, obscureText: true),
-
-            const Spacer(),
-
-            SizedBox(
-              width: double.infinity,
-              child: ElevatedButton.icon(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFFFECE0C),
-                  padding: const EdgeInsets.symmetric(vertical: 14),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                ),
-                icon: const Icon(Icons.save, color: Colors.black),
-                label: const Text(
-                  'ບັນທຶກ',
-                  style: TextStyle(color: Colors.black),
-                ),
-                onPressed: () {
-                  print('Phone: ${_phoneController.text}');
-                  print('Password: ${_passwordController.text}');
-                },
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildSectionTitle(String title, String actionText, {required VoidCallback onTap}) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 4),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Text(title, style: const TextStyle(fontWeight: FontWeight.bold)),
-          InkWell(
-            onTap: onTap,
-            child: Row(
+      body: BlocListener<AuthCubit, AuthState>(
+        listener: (context, state) {
+          if (state.authStatus == AuthStatus.success) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text('Password changed successfully!')),
+            );
+            setState(() {
+              _isEditingPassword = false;
+              _oldPasswordController.clear();
+              _newPasswordController.clear();
+              _confirmPasswordController.clear();
+            });
+          } else if (state.authStatus == AuthStatus.failure) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text(state.error ?? 'Failed to change password')),
+            );
+          }
+        },
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: Form(
+            key: _formKey,
+            child: Column(
               children: [
-                const Icon(Icons.edit, size: 16, color: Colors.blue),
-                const SizedBox(width: 4),
-                Text(
-                  actionText,
-                  style: const TextStyle(color: Colors.blue, fontWeight: FontWeight.bold),
+                PasswordBox(
+                  isEditing: _isEditingPassword,
+                  showOldPassword: _showOldPassword,
+                  showNewPassword: _showNewPassword,
+                  showConfirmPassword: _showConfirmPassword,
+                  oldPasswordController: _oldPasswordController,
+                  newPasswordController: _newPasswordController,
+                  confirmPasswordController: _confirmPasswordController,
+                  toggleOldPasswordVisibility: () {
+                    setState(() {
+                      _showOldPassword = !_showOldPassword;
+                    });
+                  },
+                  toggleNewPasswordVisibility: () {
+                    setState(() {
+                      _showNewPassword = !_showNewPassword;
+                    });
+                  },
+                  toggleConfirmPasswordVisibility: () {
+                    setState(() {
+                      _showConfirmPassword = !_showConfirmPassword;
+                    });
+                  },
+                  formKey: _formKey,
+                  onEditTap: () {
+                    setState(() {
+                      _isEditingPassword = !_isEditingPassword;
+                    });
+                  },
+                ),
+                const Spacer(),
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 40),
+                  child: SizedBox(
+                    width: double.infinity,
+                    child: BlocBuilder<AuthCubit, AuthState>(
+                      builder: (context, state) {
+                        if (state.authStatus == AuthStatus.loading) {
+                          return const ElevatedButton(
+                            onPressed: null,
+                            child: CircularProgressIndicator(),
+                          );
+                        }
+                        return ElevatedButton.icon(
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: const Color(0xFFFECE0C),
+                            padding: const EdgeInsets.symmetric(vertical: 14),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                          ),
+                          icon: const Icon(Icons.save, color: Colors.black),
+                          label: const Text(
+                            'ບັນທຶກ',
+                            style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+                          ),
+                          onPressed: () {
+                            if (_isEditingPassword) {
+                              if (_formKey.currentState!.validate()) {
+                                context.read<AuthCubit>().ChangePassword(
+                                  oldPassword: _oldPasswordController.text,
+                                  password: _newPasswordController.text,
+                                  confirmPassword: _confirmPasswordController.text,
+                                );
+                              }
+                            }
+                          },
+                        );
+                      },
+                    ),
+                  ),
                 ),
               ],
             ),
-          )
-        ],
-      ),
-    );
-  }
-
-  Widget _buildEditableField(
-    IconData icon,
-    String hint,
-    TextEditingController controller, {
-    bool obscureText = false,
-  }) {
-    return Container(
-      margin: const EdgeInsets.only(bottom: 12),
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
-      decoration: BoxDecoration(
-        border: Border.all(color: const Color(0xFFFECE0C), width: 2),
-        borderRadius: BorderRadius.circular(8),
-      ),
-      child: Row(
-        children: [
-          Icon(icon, color: Colors.blue[800]),
-          const SizedBox(width: 12),
-          Expanded(
-            child: TextField(
-              controller: controller,
-              obscureText: obscureText,
-              decoration: InputDecoration(
-                hintText: hint,
-                border: InputBorder.none,
-              ),
-              style: const TextStyle(fontSize: 16),
-            ),
           ),
-        ],
+        ),
       ),
     );
   }
