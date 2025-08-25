@@ -7,6 +7,7 @@ import 'package:m9/core/data/response/api_response.dart';
 import 'package:m9/feature/auth/domain/models/bank_account_model.dart';
 import 'package:m9/feature/auth/domain/models/user_model.dart';
 import 'package:http/http.dart' as http;
+// ignore: unused_import
 import 'package:mime/mime.dart';
 import 'package:http_parser/http_parser.dart';
 
@@ -17,42 +18,56 @@ class AuthService {
     required String username,
     required String firstName,
     required String lastName,
+    required String email,
     required String gender,
     required String dob,
     required String address,
-    required String email,
+    
   }) async {
     try {
       final token = await HiveDatabase.getToken();
+
+      // Prepare headers
       Map<String, String> headers = {
-        'Content-type': 'application/json',
+        'Content-Type': 'application/json',
         'Accept': 'application/json',
         'Authorization': "Bearer ${token['token']}",
       };
-      var request = http.MultipartRequest(
-        "POST",
+
+      String formattedDob = dob;
+      if (dob.contains('/')) {
+        final parts = dob.split('/');
+        if (parts.length == 3) {
+          formattedDob = '${parts[2]}-${parts[1]}-${parts[0]}';
+        }
+      }
+
+      final body = jsonEncode({
+        'username': username,
+        'firstName': firstName,
+        'lastName': lastName,
+        'email': email,
+        'gender': gender,
+        'dob': formattedDob,
+        'address': address,
+      });
+
+      final response = await http.put(
         Uri.parse(ApiPaths.updateProfile),
+        headers: headers,
+        body: body,
       );
-      request.headers.addAll(headers);
-      // ເພີ່ມ field
-      request.fields['username'] = username;
-      request.fields['firstName'] = firstName;
-      request.fields['lastName'] = lastName;
-      request.fields['email'] = email;
-      request.fields['gender'] = gender;
-      request.fields['dob'] = dob;
-      request.fields['address'] = address;
-      var response = await request.send();
+
       if (response.statusCode == 200) {
-        var body = await response.stream.bytesToString();
-        print("✅ Success: $body");
-        await HiveDatabase.saveProfile(profile: body);
+        final responseData = jsonDecode(response.body);
+        await HiveDatabase.saveProfile(profile: jsonEncode(responseData));
         return true;
       } else {
+        print("❌ Error: ${response.statusCode} - ${response.body}");
         return false;
       }
     } catch (e) {
-      print("❌ Error: ${e}");
+      print("❌ Exception: $e");
       rethrow;
     }
   }
@@ -100,7 +115,31 @@ class AuthService {
     }
   }
 
-  // Fixed AuthService addBankAccount method
+  //bankaccount part
+ Future<BankAccount?> getBankAccount() async {
+  try {
+    final token = await HiveDatabase.getToken();
+    Map<String, String> headers = {
+      'Accept': 'application/json',
+      'Authorization': "Bearer ${token['token']}",
+    };
+    final response = await http.get(
+      Uri.parse(ApiPaths.getBankAccountsPath),
+      headers: headers,
+    );
+    final data = jsonDecode(response.body);
+
+    if (response.statusCode == 200 && data['data'] != null) {
+      final bankAccount = BankAccount.fromJson(data['data']);
+      return bankAccount;
+    }
+    return null;
+  } catch (e) {
+    print('❌ Error in getBankAccount: $e');
+    return null;
+  }
+}
+
   Future<bool> addBankAccount({
     required String bankName,
     required String accountName,
@@ -146,43 +185,43 @@ class AuthService {
     }
   }
 
-  Future<bool> editBankAccount({
-    required String accountId,
-    required String bankName,
-    required String accountName,
-    required String accountNo,
-    String? image,
-  }) async {
+  Future<BankAccount?> updateBankAccount(BankAccount account) async {
     try {
       final token = await HiveDatabase.getToken();
-      Map<String, String> headers = {
-        'Content-type': 'application/json',
-        'Accept': 'application/json',
-        'Authorization': "Bearer ${token['token']}",
-      };
-      var request = http.MultipartRequest(
-        'POST',
-        Uri.parse(ApiPaths.addBankAccountPath),
-      );
-      // Add headers
-      request.headers.addAll(headers);
-      request.fields['id'] = accountId;
-      request.fields['bankName'] = bankName;
-      request.fields['accountName'] = accountName;
-      request.fields['accountNo'] = accountNo;
-      final streamedResponse = await request.send();
-      final response = await http.Response.fromStream(streamedResponse);
 
-      if (response.statusCode == 200) {
-        return true;
+      final requestData = {
+        "id": account.id,
+        "bankName": account.bankName.trim(),
+        "accountName": account.accountName.trim(),
+        "accountNo": account.accountNo.trim(),
+        "isActive": account.isActive,
+        if (account.image != null) "image": account.image,
+      };
+
+      final response = await http.put(
+        Uri.parse(ApiPaths.editBankAccountPath),
+        headers: {
+          'Accept': 'application/json',
+          'Authorization': "Bearer ${token['token']}",
+          'Content-Type': 'application/json',
+        },
+        body: jsonEncode(requestData),
+      );
+
+      final data = jsonDecode(response.body);
+
+      if ((response.statusCode == 200 || response.statusCode == 201) &&
+          (data['status'] == true || data['data'] != null)) {
+        return BankAccount.fromJson(data['data'] ?? data);
       } else {
-        return false;
+        throw Exception(data['message'] ?? 'Update failed');
       }
     } catch (e) {
-      print("❌ Error: ${e}");
-      return false;
+      print('❌ Error updating bank account: $e');
+      rethrow;
     }
   }
+
 
   Future<bool> checkConnectivity() async {
     try {
@@ -235,14 +274,24 @@ class AuthService {
 
   Future<UserModel?> getProfile() async {
     try {
-      final result = await HiveDatabase.getProfile();
-      if (result.id == null) {
-        return null;
+      final token = await HiveDatabase.getToken();
+      final response = await http.get(
+        Uri.parse(ApiPaths.getProfilePath),
+        headers: {
+          'Authorization': 'Bearer ${token['token']}',
+          'Accept': 'application/json',
+        },
+      );
+
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body)['data'];
+        final user = UserModel.fromJson(data);
+        await HiveDatabase.saveProfile(profile: jsonEncode(data));
+        return user;
       }
-      return result;
-    } catch (e) {
-      return null;
-    }
+    } catch (_) {}
+
+    return await HiveDatabase.getProfile();
   }
 
   Future<bool> Forgot({required String phoneNumber}) async {
@@ -314,6 +363,30 @@ class AuthService {
       );
 
       if (response.status == true) {
+        return true;
+      }
+      return false;
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<bool> getMe() async {
+    try {
+      Map<String, String> headers = {
+        'Content-type': 'application/json',
+        'Accept': 'application/json',
+      };
+
+      final ApiResponse response = await _networkCall.request(
+        paths: ApiPaths.getProfilePath,
+        method: ApiPaths.getRequest,
+        headers: headers,
+      );
+
+      if (response.status == true) {
+        await HiveDatabase.deleteProfile();
+        await HiveDatabase.saveProfile(profile: jsonEncode(response.data));
         return true;
       }
       return false;
@@ -399,9 +472,11 @@ class AuthService {
     }
   }
 
-  Future<bool> ChangePhoneNumber({required String newPhoneNumber}) async {
+  Future<bool> ChangePhoneNumber({
+    required String newPhoneNumber,
+    required String googleToken,
+  }) async {
     try {
-      final googleToken = await HiveDatabase.getGoogleToken();
       final token = await HiveDatabase.getToken();
       Map<String, String> headers = {
         'Accept': 'application/json',
@@ -411,6 +486,7 @@ class AuthService {
         "newPhoneNumber": '20' + newPhoneNumber,
         "googleToken": googleToken,
       };
+      print("=====>${body}");
       final response = await http.put(
         Uri.parse(ApiPaths.changePhoneNumberPath),
         body: body,
@@ -459,29 +535,6 @@ class AuthService {
     } catch (e) {
       print("❌ Error: ${e}");
       rethrow;
-    }
-  }
-
-  Future<List<BankAccount>?> getBankAccounts() async {
-    try {
-      final token = await HiveDatabase.getToken();
-      Map<String, String> headers = {
-        'Accept': 'application/json',
-        'Authorization': "Bearer ${token['token']}",
-      };
-      final response = await http.get(
-        Uri.parse(ApiPaths.getBankAccountsPath),
-        headers: headers,
-      );
-      final data = jsonDecode(response.body);
-      if (response.statusCode == 200) {
-        final banks = bankModelFromJson(jsonEncode(data['data']));
-        return banks;
-      }
-      return null;
-    } catch (e) {
-      print('❌ Error in getBankAccounts: $e');
-      return null;
     }
   }
 
