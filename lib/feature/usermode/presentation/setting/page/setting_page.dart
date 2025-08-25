@@ -9,9 +9,12 @@ import 'package:m9/feature/auth/cubit/auth_cubit.dart';
 
 import 'package:m9/feature/auth/cubit/auth_state.dart';
 import 'package:m9/feature/usermode/presentation/home/presentation/widgets/drawer_user.dart';
-import 'package:m9/feature/usermode/presentation/setting/page/bank/page/banklist.dart';
+import 'package:m9/feature/usermode/presentation/setting/page/bank/page/bankaccount.dart';
 import 'package:m9/feature/usermode/presentation/setting/page/change/page/changenumber.dart';
+import 'package:m9/feature/usermode/presentation/setting/page/lang/page/language.dart';
 import 'package:m9/feature/usermode/presentation/setting/page/person/page/personal.dart';
+import 'package:m9/feature/usermode/presentation/setting/page/security/page/security.dart';
+import 'package:m9/feature/usermode/presentation/setting/page/terms/page/terms.dart';
 
 class SettingPage extends StatefulWidget {
   const SettingPage({super.key});
@@ -21,6 +24,7 @@ class SettingPage extends StatefulWidget {
 }
 
 class _SettingPageState extends State<SettingPage> {
+  // ignore: unused_field
   File? _profileImage;
 
   // @override
@@ -95,10 +99,10 @@ class _SettingPageState extends State<SettingPage> {
                       ),
                       onPressed: () {
                         // Perform logout
-                        final authCubit = context.read<AuthCubit>();
+                        context.read<AuthCubit>();
                         //   authCubit.deleteAll(); // Clear local data
                         Navigator.pop(context); // Close dialog
-                        // Navigate to login page or handle logout logic
+                        
                       },
                       child: const Text(
                         'ຕົກລົງ',
@@ -116,7 +120,6 @@ class _SettingPageState extends State<SettingPage> {
   final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
   @override
   Widget build(BuildContext context) {
-    var size = MediaQuery.of(context).size;
     return Scaffold(
       key: scaffoldKey,
       backgroundColor: Colors.white,
@@ -136,8 +139,8 @@ class _SettingPageState extends State<SettingPage> {
             child: Container(
               decoration: BoxDecoration(
                 color: Colors.white,
-                borderRadius: BorderRadius.circular(15),
-                boxShadow: [BoxShadow(blurRadius: 1, spreadRadius: 0.5)],
+                borderRadius: BorderRadius.circular(8),
+                boxShadow: [BoxShadow(blurRadius: 1)],
               ),
               child: Center(child: Icon(Icons.menu, size: 25)),
             ),
@@ -213,21 +216,12 @@ class _SettingPageState extends State<SettingPage> {
                               width: 70,
                               height: 70,
                               child:
-                                  state.userModel!.displayName == null
-                                      ? state.userModel!.avatar == null
-                                          ? Image.asset(
-                                            "assets/icons/user2.png",
-                                          )
-                                          : CachedNetworkImage(
-                                            imageUrl:
-                                                AppConstants.imageUrl +
-                                                state.userModel!.avatar
-                                                    .toString(),
-                                            fit: BoxFit.cover,
-                                            height: 80,
-                                          )
+                                  state.userModel!.displayName == null ||
+                                          state.userModel!.avatar == null
+                                      ? Image.asset("assets/icons/user2.png")
                                       : CachedNetworkImage(
                                         imageUrl:
+                                            AppConstants.imageUrl +
                                             state.userModel!.avatar.toString(),
                                         fit: BoxFit.cover,
                                         height: 80,
@@ -325,7 +319,14 @@ class _SettingPageState extends State<SettingPage> {
                             MaterialPageRoute(
                               builder: (context) => const PersonalInfoPage(),
                             ),
-                          );
+                          ).then((value) {
+                           
+                            if (value == true) {
+                              context
+                                  .read<AuthCubit>()
+                                  .getProfile();
+                            }
+                          });
                         },
                       ),
                       _buildMenuItem(
@@ -335,34 +336,33 @@ class _SettingPageState extends State<SettingPage> {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder:
-                                  (context) => const BankAccountsListPage(),
+                              builder: (context) => const BankAccountsPage(),
                             ),
                           );
                         },
                       ),
                       _buildMenuItem(
-                        Icons.shield_moon,
+                        Icons.shield_outlined,
                         'ຄວາມປອດໄພ',
                         onTap: () {
-                          // Navigator.push(
-                          //   context,
-                          //   MaterialPageRoute(
-                          //     builder: (context) => const SecurityInfoPage(),
-                          //   ),
-                          // );
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const SecurityInfoPage(),
+                            ),
+                          );
                         },
                       ),
                       _buildMenuItem(
                         Icons.language_sharp,
                         'ພາສາລະບົບ',
                         onTap: () {
-                          // Navigator.push(
-                          //   context,
-                          //   MaterialPageRoute(
-                          //     builder: (context) => const LanguagePage(),
-                          //   ),
-                          // );
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const LanguagePage(),
+                            ),
+                          );
                         },
                       ),
                       _buildMenuItem(
@@ -381,12 +381,12 @@ class _SettingPageState extends State<SettingPage> {
                         Icons.rule,
                         'ຂໍ້ກຳນົດ ແລະ ນະໂຍບາຍ',
                         onTap: () {
-                          // Navigator.push(
-                          //   context,
-                          //   MaterialPageRoute(
-                          //     builder: (context) => const TermsPage(),
-                          //   ),
-                          // );
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const TermsPage(),
+                            ),
+                          );
                         },
                       ),
 
