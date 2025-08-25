@@ -7,14 +7,12 @@ UserModel userModelFromJson(String str) => UserModel.fromJson(json.decode(str));
 String userModelToJson(UserModel data) => json.encode(data.toJson());
 
 class UserModel {
-  // ຕົວປ່ຽນພາຍນອກທີ່ສົ່ງມາ
   String? id;
   String? username;
   String? firstName;
   String? lastName;
   String? displayName;
   String? phoneNumber;
-  String? password;
   String? email;
   String? role;
   String? dob;
@@ -22,8 +20,8 @@ class UserModel {
   String? avatar;
   String? token;
   String? refreshToken;
+  String? gender;
 
-  // ເປັນ ຕົວປ່ຽນພາຍໃນໃຊ້ໃນ model
   UserModel({
     this.id,
     this.username,
@@ -31,7 +29,6 @@ class UserModel {
     this.lastName,
     this.displayName,
     this.phoneNumber,
-    this.password,
     this.email,
     this.role,
     this.dob,
@@ -39,37 +36,40 @@ class UserModel {
     this.avatar,
     this.token,
     this.refreshToken,
+    this.gender,
   });
-  // ເປັນການສ້າງ from ຂໍ້ມູນເພື່ອເອົາໄປໃສ່ງານ
+
   factory UserModel.fromJson(Map<String, dynamic> json) => UserModel(
-    id: json["id"],
-    username: json["username"],
-    phoneNumber: json["phoneNumber"],
-    password: json["password"],
-    displayName: json['displayName'],
-    firstName: json['firstName'],
-    lastName: json['lastName'],
-    email: json['email'],
-    role: json['role'],
-    dob: json['dob'],
-    avatar: json['avatar'],
-    token: json["token"],
-    refreshToken: json["refreshToken"],
-  );
-  // ເປັນການສົ່ງຂໍ້ມູນກັບຄືນຫາ server
+        id: json["id"]?.toString(),
+        username: json["username"]?.toString() ?? '',
+        firstName: json["firstName"]?.toString() ?? '',
+        lastName: json["lastName"]?.toString() ?? '',
+        displayName: json["displayName"]?.toString(),
+        phoneNumber: json["phoneNumber"]?.toString(),
+        email: json["email"]?.toString() ?? '',
+        role: json["role"]?.toString(),
+        dob: json["dob"]?.toString(),
+        address: json["address"]?.toString() ?? '',
+        avatar: json["avatar"]?.toString(),
+        token: json["token"]?.toString(),
+        refreshToken: json["refreshToken"]?.toString(),
+        gender: json["gender"]?.toString() ?? '',
+      );
+
   Map<String, dynamic> toJson() => {
-    "id": id,
-    "username": username,
-    "phoneNumber": phoneNumber,
-    "password": password,
-    "displayName": displayName,
-    "firstName": firstName,
-    "lastName": lastName,
-    "email": email,
-    "role": role,
-    "dob": dob,
-    "avatar": avatar,
-    "token": token,
-    "refreshToken": refreshToken,
-  };
+        "id": id,
+        "username": username,
+        "firstName": firstName,
+        "lastName": lastName,
+        "displayName": displayName,
+        "phoneNumber": phoneNumber,
+        "email": email,
+        "role": role,
+        "dob": dob,
+        "address": address,
+        "avatar": avatar,
+        "token": token,
+        "refreshToken": refreshToken,
+        "gender": gender,
+      };
 }
